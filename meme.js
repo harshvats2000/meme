@@ -44,7 +44,6 @@ auth.onAuthStateChanged(firebaseUser => {
     } else {
         console.log('logged out');
         createLoginBtn();
-        displayMemes();
 
         //rise login modal
         var login = document.getElementById('login');
