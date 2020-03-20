@@ -1,0 +1,64 @@
+html body {
+	margin: 0;
+	height: 100%;
+}
+
+img {
+	width: 100%;
+}
+
+#container {
+	margin: auto;
+	margin-top: 40px;
+}
+
+@media only screen and (min-width: 700px){
+	#container {
+		width: 50%;
+	}
+}
+
+.box {
+	background-color: beige;
+	min-height: 200px;
+	margin: 5px;
+}
+
+.likeBtn {
+	width: 50%;
+	height: 40px;
+}
+
+.dislikeBtn {
+	width: 50%;
+	height: 40px;
+}
+
+#header {
+	height: 40px;
+	background-color: whitesmoke;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	box-shadow: 0 2px 7px lightgrey;
+}
+
+#logoutBtn {
+	float: right;
+}
+
+#upload {
+	float: right;
+}
+
+#login {
+	float: right;
+}
+
+.likeTxt {
+	vertical-align: text-bottom;
+}
+
+.dislikeTxt {
+	vertical-align: super;
+}

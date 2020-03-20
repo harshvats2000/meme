@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>meme</title>
+    <meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-storage.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="meme.css">
+</head>
+
+<body>
+    <!-- header starts -->
+    <div id="header">
+<!--        <button type="button" data-toggle="modal" data-target="#myModal" id="login">Login</button>-->
+<!--        <button type="button" id="logoutBtn">Logout</button>-->
+    </div>
+    <!-- header ends -->
+
+    <!-- container starts -->
+    <div id="container"></div>
+    <!-- container ends -->
+
+    <!-- login modal starts -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="text-align: center;">Login</h4>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                	<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    					<input class="mdl-textfield__input" type="email" id="email">
+    					<label class="mdl-textfield__label" for="email">Email...</label>
+  					</div>
+
+  					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    					<input class="mdl-textfield__input" type="password" id="password">
+    					<label class="mdl-textfield__label" for="password">Password...</label>
+  					</div>
+                    <!-- <label for="email">email</label>
+                    <input type="email" name="email" id="email">
+                    <br>
+                    <label for="password">password</label>
+                    <input type="password" name="password" id="password"> -->
+                </div>
+                <div class="modal-footer" style="text-align: center;">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="loginBtn">Login</button>
+                    <a href="signUp.html">Dont have an accout?</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- login modal ends -->
+
+    <!-- upload modal starts -->
+    <div id="uploadModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Upload</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="file" accept="image/x-png" id="memeFile">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="uploadBtn" class="mdl-button mdl-js-button mdl-button--raised">Upload</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- upload modal ends -->
+
+    <!-- snackbar starts -->
+    <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+  		<div class="mdl-snackbar__text"></div>
+  		<button class="mdl-snackbar__action" type="button"></button>
+	</div>
+    <!-- snackbar ends -->
+
+    <!-- <div class="box">
+		<img src="">
+		<div class="likeBtn"><i class="material-icons">thumb_up</i></div>
+		<div class="dislikeBtn"><i class="material-icons">thumb_down</i></div>
+	</div> -->
+
+    <script type="text/javascript" src="meme.js"></script>
+</body></html>
