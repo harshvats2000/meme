@@ -3,6 +3,10 @@ html body {
 	height: 100%;
 }
 
+body {
+	background-color: #414142;
+}
+
 img {
 	width: 100%;
 }
@@ -27,16 +31,19 @@ img {
 .likeBtn {
 	width: 50%;
 	height: 40px;
+	border: none;
 }
 
 .dislikeBtn {
 	width: 50%;
 	height: 40px;
+	border: none;
 }
 
 #header {
 	height: 40px;
-	background-color: whitesmoke;
+	background-color: #414142;
+	color: white;
 	position: fixed;
 	top: 0;
 	width: 100%;
@@ -46,14 +53,20 @@ img {
 #logoutBtn {
 	float: right;
 	margin-left: 8px;
+	color: white;
+	background-color: crimson;
 }
 
 #upload {
 	float: right;
+	background-color: crimson;
+	color: white;
 }
 
 #login {
 	float: right;
+	background-color: crimson;
+	color: white;
 }
 
 .likeTxt {
@@ -68,8 +81,11 @@ img {
 	font-size: 20px;
     margin: 8px;
     font-family: cursive;
+    color: white;
 }
 
 .memeDetails {
 	font-family: cursive;
+	background-color: #414142;
+	color: white;
 }
