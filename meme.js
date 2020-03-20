@@ -164,6 +164,7 @@ function disableLikedPostsBtn() {
         var i = snap.key.split('meme');
         document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
         document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
+        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].style.backgroundColor = 'crimson';
     })
 }
 
@@ -176,6 +177,7 @@ function disableDisLikedPostsBtn() {
         var i = snap.key.split('meme');
         document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
         document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
+        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].style.backgroundColor = 'crimson';
     })
 }
 
