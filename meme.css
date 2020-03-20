@@ -14,7 +14,7 @@ img {
 
 @media only screen and (min-width: 700px){
 	#container {
-		width: 50%;
+		width: 40%;
 	}
 }
 
@@ -61,4 +61,10 @@ img {
 
 .dislikeTxt {
 	vertical-align: super;
+}
+
+#displayUsername {
+	font-size: 20px;
+    margin: 8px;
+    font-family: cursive;
 }
