@@ -23,6 +23,7 @@ auth.onAuthStateChanged(firebaseUser => {
         createLogoutBtn();
         createUploadBtn();
         displayMemes();
+        displayUsername();
         disableLikedPostsBtn();
         disableDisLikedPostsBtn();
 
@@ -90,6 +91,8 @@ function logout() {
       logoutBtn.parentNode.removeChild(logoutBtn);
       var upload = document.getElementById('upload');
       upload.parentNode.removeChild(upload);
+      var username = document.getElementById('displayUsername');
+      username.parentNode.removeChild(username);
   });
 }
 
@@ -154,17 +157,19 @@ function uploadMeme() {
 
 function disableLikedPostsBtn() {
     databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts').on('child_added', snap => {
-        var i = snap.key.charAt(snap.key.length - 1);
-        document.getElementsByClassName('likeBtn')[i-1].disabled = 'true';
-        document.getElementsByClassName('dislikeBtn')[i-1].disabled = 'true';
+        var i = snap.key.split('meme');
+        console.log(i);
+        document.getElementsByClassName('likeBtn')[i[1]-1].disabled = 'true';
+        console.log(i[1]);
+        document.getElementsByClassName('dislikeBtn')[i[1]-1].disabled = 'true';
     })
 }
 
 function disableDisLikedPostsBtn() {
     databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts').on('child_added', snap => {
-        var i = snap.key.charAt(snap.key.length - 1);
-        document.getElementsByClassName('dislikeBtn')[i-1].disabled = 'true';
-        document.getElementsByClassName('likeBtn')[i-1].disabled = 'true';
+        var i = snap.key.split('meme');
+        document.getElementsByClassName('likeBtn')[i[1]-1].disabled = 'true';
+        document.getElementsByClassName('dislikeBtn')[i[1]-1].disabled = 'true';
     })
 }
 
@@ -315,6 +320,16 @@ function dislikeEvent(dislikes, i, k) {
             second: second
         })
     });
+}
+
+function displayUsername() {
+    databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+        var span = document.createElement('span');
+        span.id = 'displayUsername';
+        var t = document.createTextNode(snap.val().username);
+        span.appendChild(t);
+        document.getElementById('header').appendChild(span);
+    })
 }
 
 //Add login event
