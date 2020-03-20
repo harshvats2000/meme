@@ -182,6 +182,10 @@ function disableDisLikedPostsBtn() {
 function displayMemes() {
     var i = 0;
     databaseRef.child('memes').on('child_added', snap => {
+        var uploadedBy = snap.val().uploadingUsername;
+        var date = snap.val().date;
+        var month = snap.val().month;
+        var year = snap.val().year;
         var numOfMemes;
         databaseRef.child('memes/').once('value', snap => {
             numOfMemes = snap.numChildren();
@@ -190,26 +194,30 @@ function displayMemes() {
         var url = snap.val().url;
         var likes = snap.val().likes;
         var dislikes = snap.val().dislikes;
-        console.log(url)
     
         //creation of box starts
         var div1 = document.createElement('div');
         div1.className = 'box';
         var img = document.createElement('img');
 
-        var div2 = document.createElement('button');
-        div2.className = 'likeBtn';
+        var div2 = document.createElement('div');
+        div2.className = 'memeDetails';
+        var t = document.createTextNode('uploaded by ' + uploadedBy + ' on ' + date + ' ' + month + ' ' + year);
+        div2.appendChild(t);
+
+        var div3 = document.createElement('button');
+        div3.className = 'likeBtn';
         var span1 = document.createElement('span');
         span1.className = 'likeTxt';
-        var t = document.createTextNode(likes);
+        t = document.createTextNode(likes);
         span1.appendChild(t);
         var icon1 = document.createElement('i');
         icon1.className = 'material-icons like-icon';
         t = document.createTextNode('thumb_up');
         icon1.appendChild(t);
 
-        var div3 = document.createElement('button');
-        div3.className = 'dislikeBtn';
+        var div4 = document.createElement('button');
+        div4.className = 'dislikeBtn';
         var span2 = document.createElement('span');
         span2.className = 'dislikeTxt';
         t = document.createTextNode(dislikes);
@@ -222,10 +230,11 @@ function displayMemes() {
         div1.appendChild(img);
         div1.appendChild(div2);
         div1.appendChild(div3);
-        div2.appendChild(span1);
-        div2.appendChild(icon1);
-        div3.appendChild(span2);
-        div3.appendChild(icon2);
+        div1.appendChild(div4);
+        div3.appendChild(span1);
+        div3.appendChild(icon1);
+        div4.appendChild(span2);
+        div4.appendChild(icon2);
         document.getElementById('container').appendChild(div1);
         //creation of box ends
 
@@ -246,7 +255,6 @@ function displayMemes() {
 }
 
 function likeEvent(likes, i, numOfMemes) {
-    console.log(i)
     var likeBtn = $('.likeBtn')[i];
     var dislikeBtn = $('.dislikeBtn')[i];
     var initialLikes = likes;
