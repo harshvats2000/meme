@@ -156,31 +156,41 @@ function uploadMeme() {
 }
 
 function disableLikedPostsBtn() {
+    var numOfMemes;
+    databaseRef.child('memes/').once('value', snap => {
+        numOfMemes = snap.numChildren();
+    })
     databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts').on('child_added', snap => {
         var i = snap.key.split('meme');
-        console.log(i);
-        document.getElementsByClassName('likeBtn')[i[1]-1].disabled = 'true';
-        console.log(i[1]);
-        document.getElementsByClassName('dislikeBtn')[i[1]-1].disabled = 'true';
+        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
+        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
     })
 }
 
 function disableDisLikedPostsBtn() {
+    var numOfMemes;
+    databaseRef.child('memes/').once('value', snap => {
+        numOfMemes = snap.numChildren();
+    })
     databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts').on('child_added', snap => {
         var i = snap.key.split('meme');
-        document.getElementsByClassName('likeBtn')[i[1]-1].disabled = 'true';
-        document.getElementsByClassName('dislikeBtn')[i[1]-1].disabled = 'true';
+        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
+        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
     })
 }
 
 function displayMemes() {
     var i = 0;
-    var k = 1;
-    databaseRef.child('memes').orderByChild('timestamp').on('child_added', snap => {
+    databaseRef.child('memes').on('child_added', snap => {
+        var numOfMemes;
+        databaseRef.child('memes/').once('value', snap => {
+            numOfMemes = snap.numChildren();
+        })
         //get Elements
         var url = snap.val().url;
         var likes = snap.val().likes;
         var dislikes = snap.val().dislikes;
+        console.log(url)
     
         //creation of box starts
         var div1 = document.createElement('div');
@@ -229,21 +239,21 @@ function displayMemes() {
             });
 
         //like and dislike events
-        likeEvent(snap.val().likes, i, k);
-        dislikeEvent(snap.val().dislikes, i, k);
+        likeEvent(snap.val().likes, i, numOfMemes);
+        dislikeEvent(snap.val().dislikes, i, numOfMemes);
         i++;
-        k++;
     })
 }
 
-function likeEvent(likes, i, k) {
+function likeEvent(likes, i, numOfMemes) {
+    console.log(i)
     var likeBtn = $('.likeBtn')[i];
     var dislikeBtn = $('.dislikeBtn')[i];
     var initialLikes = likes;
     var finalLikes = initialLikes + 1;
     likeBtn.addEventListener('click', () => {
-        databaseRef.child('memes/meme' + k).update({
-            likes: finalLikes
+        databaseRef.child('memes/meme' + (numOfMemes - i)).update({
+            likes: finalLikes, 
         });
         likeBtn.innerHTML = "";
         var t = document.createTextNode(finalLikes);
@@ -267,7 +277,7 @@ function likeEvent(likes, i, k) {
         var hour = d.getHours();
         var minute = d.getMinutes();
         var second = d.getSeconds();
-        databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts/meme' + k).update({
+        databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts/meme' + (numOfMemes - i)).update({
             year: year,
             month: month,
             date: date,
@@ -279,13 +289,13 @@ function likeEvent(likes, i, k) {
     });
 }
 
-function dislikeEvent(dislikes, i, k) {
+function dislikeEvent(dislikes, i, numOfMemes) {
     var dislikeBtn = $('.dislikeBtn')[i];
     var likeBtn = $('.likeBtn')[i];
     var initialDislikes = dislikes;
     var finalDislikes = initialDislikes + 1;
     dislikeBtn.addEventListener('click', () => {
-        databaseRef.child('memes/meme' + k).update({
+        databaseRef.child('memes/meme' + (numOfMemes - i)).update({
             dislikes: finalDislikes
         });
         dislikeBtn.innerHTML = "";
@@ -310,7 +320,7 @@ function dislikeEvent(dislikes, i, k) {
         var hour = d.getHours();
         var minute = d.getMinutes();
         var second = d.getSeconds();
-        databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts/meme' + k).update({
+        databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts/meme' + (numOfMemes - i)).update({
             year: year,
             month: month,
             date: date,
