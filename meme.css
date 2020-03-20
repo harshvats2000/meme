@@ -45,6 +45,7 @@ img {
 
 #logoutBtn {
 	float: right;
+	margin-left: 8px;
 }
 
 #upload {
@@ -67,4 +68,8 @@ img {
 	font-size: 20px;
     margin: 8px;
     font-family: cursive;
+}
+
+.memeDetails {
+	font-family: cursive;
 }
