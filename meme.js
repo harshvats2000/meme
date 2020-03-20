@@ -43,6 +43,7 @@ auth.onAuthStateChanged(firebaseUser => {
         });
     } else {
         console.log('logged out');
+        displayMemes();
         createLoginBtn();
 
         //rise login modal
@@ -92,6 +93,7 @@ function logout() {
       upload.parentNode.removeChild(upload);
       var username = document.getElementById('displayUsername');
       username.parentNode.removeChild(username);
+      window.location.href = 'index.html';
   });
 }
 
