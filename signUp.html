@@ -39,6 +39,15 @@
 			font-size: 22px;
 			font-family: cursive;
 		}
+		#okBtn{
+			background-color: #00ffea;
+		}
+		.modal-content{
+			background-color: #00BFFF;
+		}
+		ol{
+			font-size: 17px;
+		}
 	</style>
 </head>
 <body>
@@ -65,6 +74,31 @@
   		<br>
 		<button id="signUp" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">SignUp</button>
 	</div>
+
+	<!-- modal starts -->
+	<div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="text-align: center;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2>Instructions</h2>
+                </div>
+                <div class="modal-body">
+                	<ol type="1">
+                		<li>This is a website where you can upload memes, see what others uploaded, react to their memes, share them and many other tempting features.</li>
+                		<li>The meme you uploaded cannot be deleted.So be sure about it's quality as it's all about your reputation.</li>
+                		<li>Once you liked or disliked a meme it's final.</li>
+                		<li>You can see all your uploaded memes in the profile section.</li>
+                	</ol>
+                </div>
+                <div class="modal-footer" style="text-align: center;">
+                    <button id="okBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">OK</button>
+                </div>
+            </div>
+
+        </div>
 
 <script type="text/javascript">
 	// Your web app's Firebase configuration
@@ -95,20 +129,25 @@ signUpBtn.addEventListener('click', () => {
 	if(username == ""){
 		alert('username cannot be empty.');
 	} else {
-		auth.createUserWithEmailAndPassword(email, psw)
-		.then(res => {
-			dataseRef.child('users/' + auth.currentUser.uid).update({
-				username: username,
-				email: email,
-				password: psw
+		$("#myModal").modal('toggle');
+		var okBtn = document.getElementById('okBtn');
+		okBtn.addEventListener('click', () => {
+			auth.createUserWithEmailAndPassword(email, psw)
+			.then(res => {
+				dataseRef.child('users/' + auth.currentUser.uid).update({
+					username: username,
+					email: email,
+					password: psw
+				});
+				window.location.href = 'index.html';
 			})
-			window.location.href = 'index.html';
-		})
-		.catch(error => {
-			alert(error);
+			.catch(error => {
+				alert(error);
+			})
 		})
 	}
 })
+
 </script>
 </body>
 </html>
