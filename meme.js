@@ -45,14 +45,12 @@ auth.onAuthStateChanged(firebaseUser => {
         console.log('logged out');
         displayMemes();
         createLoginBtn();
-
         //rise login modal
         var login = document.getElementById('login');
         login.addEventListener('click', () => {
             $("#myModal").modal('toggle');
         })
-
-        disableBtns(); //cannot like or dislike while logged out
+        
     }
 })
 
@@ -95,17 +93,6 @@ function logout() {
       username.parentNode.removeChild(username);
       window.location.href = 'index.html';
   });
-}
-
-function disableBtns() {
-    databaseRef.child('memes').once('child_added', snap => {
-        for (var i = 0; i < snap.numChildren(); i++) {
-            var likeBtns = document.getElementsByClassName('likeBtn');
-            var dislikeBtns = document.getElementsByClassName('dislikeBtn');
-            likeBtns[i].disabled = 'true';
-            dislikeBtns[i].disabled = 'true';
-        }
-    })
 }
 
 function uploadMeme() {
@@ -249,7 +236,10 @@ function displayMemes() {
             .catch(error => {
                 console.log(error);
             });
-
+        if(auth.currentUser == null){
+            document.getElementsByClassName('likeBtn')[i].disabled = 'true';
+            document.getElementsByClassName('dislikeBtn')[i].disabled = 'true';
+        }
         //like and dislike events
         likeEvent(snap.val().likes, i, numOfMemes);
         dislikeEvent(snap.val().dislikes, i, numOfMemes);
@@ -267,12 +257,15 @@ function likeEvent(likes, i, numOfMemes) {
             likes: finalLikes, 
         });
         likeBtn.innerHTML = "";
+        var span = document.createElement('span');
+        span.className = 'likeTxt';
         var t = document.createTextNode(finalLikes);
-        likeBtn.appendChild(t);
+        span.appendChild(t);
         var icon1 = document.createElement('i');
         icon1.className = 'material-icons';
         t = document.createTextNode('thumb_up');
         icon1.appendChild(t);
+        likeBtn.appendChild(span);
         likeBtn.appendChild(icon1);
         //Disable like and dislike button for that post
         likeBtn.disabled = 'true';
@@ -310,12 +303,15 @@ function dislikeEvent(dislikes, i, numOfMemes) {
             dislikes: finalDislikes
         });
         dislikeBtn.innerHTML = "";
+        var span = document.createElement('span');
+        span.className = 'dislikeTxt';
         var t = document.createTextNode(finalDislikes);
-        dislikeBtn.appendChild(t);
+        span.appendChild(t);
         var icon1 = document.createElement('i');
         icon1.className = 'material-icons';
         t = document.createTextNode('thumb_down');
         icon1.appendChild(t);
+        dislikeBtn.appendChild(span);
         dislikeBtn.appendChild(icon1);
         //disable like and dislike button for that post
         dislikeBtn.disabled = 'true';
