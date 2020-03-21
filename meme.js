@@ -142,8 +142,10 @@ function uploadMeme() {
         day: day,
         time: time,
       });
-      databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').update({
-        [url] : date
+      
+      databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes' + '/' + url).update({
+        url : url,
+        timestamp: timestamp
       })
       window.location.href = 'index.html';
     })
@@ -162,7 +164,7 @@ function disableLikedPostsBtn() {
         var i = snap.key.split('meme');
         document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
         document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
-        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].style.backgroundColor = 'crimson';
+        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].style.color = 'white';
     })
 }
 
@@ -175,7 +177,7 @@ function disableDisLikedPostsBtn() {
         var i = snap.key.split('meme');
         document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
         document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
-        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].style.backgroundColor = 'crimson';
+        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].style.color = 'white';
     })
 }
 
@@ -278,6 +280,8 @@ function likeEvent(likes, i, numOfMemes) {
         //Disable like and dislike button for that post
         likeBtn.disabled = 'true';
         dislikeBtn.disabled = 'true';
+        //change color on liking
+        likeBtn.style.color = 'white';
         //upload name of the post and time of liking
         var d = new Date();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -316,6 +320,8 @@ function dislikeEvent(dislikes, i, numOfMemes) {
         //disable like and dislike button for that post
         dislikeBtn.disabled = 'true';
         likeBtn.disabled = 'true';
+        //change color on disliking
+        dislikeBtn.style.color = 'white';
         //upload name of the post and time of disliking
         var d = new Date();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
