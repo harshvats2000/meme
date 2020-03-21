@@ -50,6 +50,17 @@ img {
 	box-shadow: 0 2px 7px lightgrey;
 }
 
+#profileBtn {
+	float: left;
+	margin-left: 8px;
+	color: white;
+	background-color: #414142;
+}
+
+#profileBtn:hover {
+	background-color: crimson;
+}
+
 #logoutBtn {
 	float: right;
 	margin-left: 8px;
@@ -83,13 +94,6 @@ img {
 
 .dislikeTxt {
 	vertical-align: super;
-}
-
-#displayUsername {
-	font-size: 20px;
-    margin: 8px;
-    font-family: cursive;
-    color: white;
 }
 
 .memeDetails {
