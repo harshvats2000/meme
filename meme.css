@@ -32,12 +32,14 @@ img {
 	width: 50%;
 	height: 40px;
 	border: none;
+	background-image: linear-gradient(to right,#047023,#13cf49);
 }
 
 .dislikeBtn {
 	width: 50%;
 	height: 40px;
 	border: none;
+	background-image: linear-gradient(to right, #eb0505, #850303);
 }
 
 #header {
