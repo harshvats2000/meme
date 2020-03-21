@@ -23,14 +23,31 @@
 	<style type="text/css">
 		body {
 			display: flex;
+			background-image: linear-gradient(to bottom, #00BFFF, #00ffea);
 		}
 		#container {
 			margin: auto;
+			background-color: deepskyblue;
+			padding: 30px;
+			box-shadow: 0 0 10px grey;	
+		}
+		#signUp:hover {
+			background-color: #00ffea;
+		}
+		p{
+			color: snow;
+			font-size: 22px;
+			font-family: cursive;
 		}
 	</style>
 </head>
 <body>
+	
 	<div id="container">
+		<div id="description">
+			<p>A website for pure memers.</p>
+		</div>
+
 		<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     		<input class="mdl-textfield__input" type="email" id="email" required>
     		<label class="mdl-textfield__label" for="email">Email...</label>
