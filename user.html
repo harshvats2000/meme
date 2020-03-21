@@ -68,11 +68,17 @@
 		#modalImg {
 			max-width: 100%;
 		}
+		#heading {
+			color: white;
+			text-align: center;
+			margin-top: 50px;
+		}
     </style>
 </head>
 <body>
 	<div id="header"></div>
 	<div id="container">
+		<h1 id="heading">Your Uploaded Memes</h1>
 		<div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
@@ -136,7 +142,7 @@ function displayUsername() {
 }
 
 function displayUploadedMemes() {
-	databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').on('child_added', snap => {
+	databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').orderByChild('timestamp').on('child_added', snap => {
 		var div1 = document.createElement('div');
 		div1.className = 'box';
 		var img = document.createElement('img');
