@@ -20,10 +20,10 @@ var auth = firebase.auth();
 auth.onAuthStateChanged(firebaseUser => {
     if (firebaseUser) {
         console.log('logged in.');
+        createProfileBtn();
         createLogoutBtn();
         createUploadBtn();
         displayMemes();
-        displayUsername();
         disableLikedPostsBtn();
         disableDisLikedPostsBtn();
 
@@ -31,6 +31,12 @@ auth.onAuthStateChanged(firebaseUser => {
         var upload = document.getElementById('upload');
         upload.addEventListener('click', () => {
           $('#uploadModal').modal('toggle');
+        })
+
+        //user profile
+        var profileBtn = document.getElementById('profileBtn');
+        profileBtn.addEventListener('click', () => {
+            window.location.href = 'user.html';
         })
 
         //Add logout event
@@ -53,6 +59,15 @@ auth.onAuthStateChanged(firebaseUser => {
         
     }
 })
+
+function createProfileBtn() {
+    var btn = document.createElement('button');
+    btn.id = 'profileBtn';
+    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
+    var t = document.createTextNode('Profile');
+    btn.appendChild(t);
+    document.getElementById('header').appendChild(btn);
+}
 
 function createLogoutBtn() {
     var btn = document.createElement('button');
@@ -111,15 +126,11 @@ function uploadMeme() {
     storageRef.child('memes/' + url + '.png').put(meme)
     .then(() => {
         var d = new Date();
-        var year = d.getFullYear();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var month = months[d.getMonth()];
-        var date = d.getDate();
+        var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var day = days[d.getDay()];
-        var hour = d.getHours();
-        var minute = d.getMinutes();
-        var second = d.getSeconds();
+        var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
       databaseRef.child('memes/' + url).update({
         url: url + '.png',
         likes: 0,
@@ -127,14 +138,13 @@ function uploadMeme() {
         uploadingUserId: userId,
         uploadingUsername: username,
         timestamp: timestamp,
-        year: year,
-        month: month,
         date: date,
         day: day,
-        hour: hour,
-        minute: minute,
-        second: second
+        time: time,
       });
+      databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').update({
+        [url] : date
+      })
       window.location.href = 'index.html';
     })
     .catch(error => {
@@ -174,8 +184,6 @@ function displayMemes() {
     databaseRef.child('memes').on('child_added', snap => {
         var uploadedBy = snap.val().uploadingUsername;
         var date = snap.val().date;
-        var month = snap.val().month;
-        var year = snap.val().year;
         var numOfMemes;
         databaseRef.child('memes/').once('value', snap => {
             numOfMemes = snap.numChildren();
@@ -192,7 +200,7 @@ function displayMemes() {
 
         var div2 = document.createElement('div');
         div2.className = 'memeDetails';
-        var t = document.createTextNode('uploaded by ' + uploadedBy + ' on ' + date + ' ' + month + ' ' + year);
+        var t = document.createTextNode('uploaded by ' + uploadedBy + ' on ' + date);
         div2.appendChild(t);
 
         var div3 = document.createElement('button');
@@ -272,23 +280,15 @@ function likeEvent(likes, i, numOfMemes) {
         dislikeBtn.disabled = 'true';
         //upload name of the post and time of liking
         var d = new Date();
-        var year = d.getFullYear();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var month = months[d.getMonth()];
-        var date = d.getDate();
+        var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var day = days[d.getDay()];
-        var hour = d.getHours();
-        var minute = d.getMinutes();
-        var second = d.getSeconds();
+        var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
         databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts/meme' + (numOfMemes - i)).update({
-            year: year,
-            month: month,
             date: date,
-            day: day,
-            hour: hour,
-            minute: minute,
-            second: second
+            time: time,
+            day: day
         })
     });
 }
@@ -318,35 +318,17 @@ function dislikeEvent(dislikes, i, numOfMemes) {
         likeBtn.disabled = 'true';
         //upload name of the post and time of disliking
         var d = new Date();
-        var year = d.getFullYear();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var month = months[d.getMonth()];
-        var date = d.getDate();
+        var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var day = days[d.getDay()];
-        var hour = d.getHours();
-        var minute = d.getMinutes();
-        var second = d.getSeconds();
+        var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
         databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts/meme' + (numOfMemes - i)).update({
-            year: year,
-            month: month,
             date: date,
-            day: day,
-            hour: hour,
-            minute: minute,
-            second: second
+            time: time,
+            day: day
         })
     });
-}
-
-function displayUsername() {
-    databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
-        var span = document.createElement('span');
-        span.id = 'displayUsername';
-        var t = document.createTextNode(snap.val().username);
-        span.appendChild(t);
-        document.getElementById('header').appendChild(span);
-    })
 }
 
 //Add login event
