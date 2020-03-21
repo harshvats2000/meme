@@ -84,8 +84,12 @@ img {
 
 #login {
 	float: right;
-	background-color: crimson;
+	background-color: #414142;
 	color: white;
+}
+
+#login:hover {
+	background-color: crimson;
 }
 
 .likeTxt {
