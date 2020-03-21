@@ -74,13 +74,16 @@ signUpBtn.addEventListener('click', () => {
 	const email = document.getElementById('email').value;
 	const psw = document.getElementById('password').value;
 	const username = document.getElementById('username').value;
+
 	if(username == ""){
 		alert('username cannot be empty.');
 	} else {
 		auth.createUserWithEmailAndPassword(email, psw)
 		.then(res => {
 			dataseRef.child('users/' + auth.currentUser.uid).update({
-				username: username
+				username: username,
+				email: email,
+				password: psw
 			})
 			window.location.href = 'index.html';
 		})
