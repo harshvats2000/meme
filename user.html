@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>meme</title>
+	<meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-storage.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+    	html body {
+			margin: 0;
+			height: 100%;
+		}
+
+		body {
+			background-color: #414142;
+		}
+
+		#header {
+			height: 40px;
+			background-color: #414142;
+			color: white;
+			position: fixed;
+			top: 0;
+			width: 100%;
+			box-shadow: 0 2px 7px lightgrey;
+		}
+
+    	#container {
+			margin: auto;
+			margin-top: 40px;
+		}
+
+		@media only screen and (min-width: 700px){
+			#container {
+				width: 40%;
+			}
+		}
+    </style>
+</head>
+<body>
+	<div id="header">Page under development</div>
+	<div id="container"></div>
+
+<script type="text/javascript">
+// Your web app's Firebase configuration
+var firebaseConfig = {
+    apiKey: "AIzaSyCMECXTcIB89Jz4OPJyT8pWHbaHwgezHUQ",
+    authDomain: "meme-a8183.firebaseapp.com",
+    databaseURL: "https://meme-a8183.firebaseio.com",
+    projectId: "meme-a8183",
+    storageBucket: "meme-a8183.appspot.com",
+    messagingSenderId: "505723637281",
+    appId: "1:505723637281:web:dca3babc6b8a80485d1d60",
+    measurementId: "G-EHK7BB5H50"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
+var storageRef = firebase.storage().ref();
+var databaseRef = firebase.database().ref();
+var auth = firebase.auth();
+
+auth.onAuthStateChanged(firebaseUser =>  {
+	if(firebaseUser) {
+		// uploadedPosts();
+	} else {
+		console.log('user is logged out.');
+	}
+})
+
+</script>
+</body>
+</html>
