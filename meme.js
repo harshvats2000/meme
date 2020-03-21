@@ -20,8 +20,8 @@ var auth = firebase.auth();
 auth.onAuthStateChanged(firebaseUser => {
     if (firebaseUser) {
         console.log('logged in.');
-        createProfileBtn();
         createLogoutBtn();
+        createProfileBtn();
         createUploadBtn();
         displayMemes();
         disableLikedPostsBtn();
@@ -104,8 +104,8 @@ function logout() {
       logoutBtn.parentNode.removeChild(logoutBtn);
       var upload = document.getElementById('upload');
       upload.parentNode.removeChild(upload);
-      var username = document.getElementById('displayUsername');
-      username.parentNode.removeChild(username);
+      var profileBtn = document.getElementById('profileBtn');
+      profileBtn.parentNode.removeChild(profileBtn);
       window.location.href = 'index.html';
   });
 }
