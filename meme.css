@@ -24,7 +24,7 @@ img {
 
 .box {
 	background-color: beige;
-	min-height: 200px;
+	min-height: 180px;
 	margin: 5px;
 }
 
@@ -54,13 +54,21 @@ img {
 	float: right;
 	margin-left: 8px;
 	color: white;
+	background-color: #414142;
+}
+
+#logoutBtn:hover {
 	background-color: crimson;
 }
 
 #upload {
 	float: right;
-	background-color: crimson;
+	background-color: #414142;
 	color: white;
+}
+
+#upload:hover {
+	background-color: crimson;
 }
 
 #login {
@@ -88,4 +96,5 @@ img {
 	font-family: cursive;
 	background-color: #414142;
 	color: white;
+	font-size: 12px;
 }
