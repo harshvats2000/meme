@@ -1,3 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>meme</title>
+	<meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-storage.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+    	* {
+		  box-sizing: border-box;
+		}
+    	html body {
+			margin: 0;
+			height: 100%;
+		}
+		body {
+			background-color: #00fbbb;
+		}
+		#header {
+			height: 40px;
+			background-color: #00bfff;
+			color: white;
+			position: fixed;
+			top: 0;
+			width: 100%;
+			box-shadow: 0 2px 7px lightgrey;
+		}
+    	#container {
+			margin: auto;
+			margin-top: 40px;
+		}
+		@media only screen and (min-width: 700px){
+			#container {
+				width: 60%;
+			}
+		}
+		#username {
+			font-size: 20px;
+			margin-left: 7px;
+			text-transform: capitalize;
+			line-height: 37px;
+		}
+		.img {
+			width: 100%;
+			height: 150px;
+		}
+		.box {
+			float: left;
+			width: 33.33%;
+			border: 2px solid white;
+		}
+		.box {
+			transition: 1s;
+		}
+		#modalImg {
+			max-width: 100%;
+		}
+		#heading1 {
+			text-align: center;
+			margin-top: 50px;
+		}
+		#heading2 {
+			text-align: center;
+		}
+		#heading3 {
+			text-align: center;
+		}
+    </style>
+</head>
+<body>
+	<div id="header"></div>
+	<div id="container">
+		<h4 id="heading1">Uploaded Memes: <span id="numOfMemes"></span></h4>
+		<h4 id="heading2">Total Likes: <span id="totalLikes"></span></h4>
+		<h4 id="heading3">Rank: <span id="rank"></span></h4>
+		<div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                	<img src="" id="modalImg">
+                </div>
+                <div class="modal-footer" style="text-align: center;">
+                    <div id="likes"></div>
+                    <div id="dislikes"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+	</div>
+
+<script type="text/javascript">
 // Your web app's Firebase configuration
 var firebaseConfig = {
     apiKey: "AIzaSyCMECXTcIB89Jz4OPJyT8pWHbaHwgezHUQ",
@@ -16,354 +128,83 @@ firebase.analytics();
 var storageRef = firebase.storage().ref();
 var databaseRef = firebase.database().ref();
 var auth = firebase.auth();
+var username;
 
-auth.onAuthStateChanged(firebaseUser => {
-    if (firebaseUser) {
-        console.log('logged in.');
-        createLogoutBtn();
-        createProfileBtn();
-        createUploadBtn();
-        displayMemes();
-        disableLikedPostsBtn();
-        disableDisLikedPostsBtn();
-
-        //rise upload Modal
-        var upload = document.getElementById('upload');
-        upload.addEventListener('click', () => {
-          $('#uploadModal').modal('toggle');
-        })
-
-        //user profile
-        var profileBtn = document.getElementById('profileBtn');
-        profileBtn.addEventListener('click', () => {
-            window.location.href = 'user.html';
-        })
-
-        //Add logout event
-        logout();
-
-        //Upload event
-        var uploadBtn = document.getElementById('uploadBtn');
-        uploadBtn.addEventListener('click', () => {
-          uploadMeme();
-        });
-
-        updateTotalLikesGot();
-    } else {
-        console.log('logged out');
-        displayMemes();
-        createLoginBtn();
-        //rise login modal
-        var login = document.getElementById('login');
-        login.addEventListener('click', () => {
-            $("#myModal").modal('toggle');
-        })
-        
-    }
+auth.onAuthStateChanged(firebaseUser =>  {
+	if(firebaseUser) {
+		console.log('user is logged in.');
+		displayUsername();
+		//get the total number of uploaded memes
+		databaseRef.child('users/' +auth.currentUser.uid + '/uploadedMemes').once('value', snap => {
+				document.getElementById('numOfMemes').innerHTML = snap.numChildren();
+		});
+		//get total number of likes
+		databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+			document.getElementById('totalLikes').innerHTML = -snap.val().totalLikesGot;
+		})
+		//getRank
+		var i =1;
+		databaseRef.child('users/').orderByChild('totalLikesGot').on('child_added', snap => {
+			if(username == snap.val().username){
+				document.getElementById('rank').innerHTML = i;
+			}
+			i++;
+		})
+		displayUploadedMemes();
+	} else {
+		console.log('user is logged out.');
+	}
 })
 
-function createProfileBtn() {
-    var btn = document.createElement('button');
-    btn.id = 'profileBtn';
-    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-    var t = document.createTextNode('Profile');
-    btn.appendChild(t);
-    document.getElementById('header').appendChild(btn);
+function displayUsername() {
+	databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+		username = snap.val().username;
+		var span = document.createElement('span');
+		span.id = 'username';
+		var t = document.createTextNode(username);
+		span.appendChild(t);
+		document.getElementById('header').appendChild(span);
+	})
 }
 
-function createLogoutBtn() {
-    var btn = document.createElement('button');
-    btn.id = 'logoutBtn';
-    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-    var t = document.createTextNode('Logout');
-    btn.appendChild(t);
-    document.getElementById('header').appendChild(btn);
+
+function displayUploadedMemes() {
+	databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').orderByChild('timestamp').on('child_added', snap => {
+
+		var div1 = document.createElement('div');
+		div1.className = 'box';
+		var img = document.createElement('img');
+		img.className = 'img';
+		div1.appendChild(img);
+		var name = snap.key;
+		var turl;
+
+		document.getElementById('container').appendChild(div1);
+		storageRef.child('memes/' + name + '.png').getDownloadURL()
+		.then((url) => {
+			turl = url;
+			img.src = url;
+		})
+		.catch(error => {
+			alert(error);
+		})
+		var likes;
+		var dislikes;
+		//get number of likes and dislikes
+		databaseRef.child('memes/' + name).once('value', snap => {
+			likes = snap.val().likes;
+			dislikes = snap.val().dislikes;
+		})
+
+		div1.addEventListener('click', () => {
+			$("#myModal").modal('toggle');
+			document.getElementById('modalImg').src = turl;
+			document.getElementById('likes').innerHTML = 'Likes: ' + likes;
+			document.getElementById('dislikes').innerHTML = 'Dislikes ' + dislikes;
+		})
+	})
 }
 
-function createLoginBtn() {
-    var btn = document.createElement('button');
-    btn.id = 'login';
-    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-    btn.modal = 'toggle';
-    var t = document.createTextNode('Login');
-    btn.appendChild(t);
-    document.getElementById('header').appendChild(btn);
-}
-
-function createUploadBtn() {
-  var btn = document.createElement('button');
-  btn.id = 'upload';
-  btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-  var t = document.createTextNode('Upload');
-  btn.appendChild(t);
-  document.getElementById('header').appendChild(btn);
-}
-
-function logout() {
-  const logoutBtn = document.getElementById('logoutBtn');
-  logoutBtn.addEventListener('click', () => {
-      auth.signOut();
-      logoutBtn.parentNode.removeChild(logoutBtn);
-      var upload = document.getElementById('upload');
-      upload.parentNode.removeChild(upload);
-      var profileBtn = document.getElementById('profileBtn');
-      profileBtn.parentNode.removeChild(profileBtn);
-      window.location.href = 'index.html';
-  });
-}
-
-function uploadMeme() {
-  databaseRef.child('memes').once('value', snap => {
-    var numOfMemes = snap.numChildren();
-    var meme = document.getElementById('memeFile').files[0];
-    var url = 'meme' + (numOfMemes+1);
-    var userId = auth.currentUser.uid;
-    var username = '';
-    var d = new Date();
-    var timestamp = -d.getTime();
-    databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
-        username = snap.val().username;
-    })
-
-    storageRef.child('memes/' + url + '.png').put(meme)
-    .then(() => {
-        var d = new Date();
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        var day = days[d.getDay()];
-        var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
-      databaseRef.child('memes/' + url).update({
-        url: url + '.png',
-        likes: 0,
-        dislikes: 0,
-        uploadingUserId: userId,
-        uploadingUsername: username,
-        timestamp: timestamp,
-        date: date,
-        day: day,
-        time: time,
-      });
-      
-      databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes' + '/' + url).update({
-        url : url,
-        timestamp: timestamp
-      })
-      window.location.href = 'index.html';
-    })
-    .catch(error => {
-      console.log(error);
-    })
-  })
-}
-
-function disableLikedPostsBtn() {
-    var numOfMemes;
-    databaseRef.child('memes/').once('value', snap => {
-        numOfMemes = snap.numChildren();
-    })
-    databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts').on('child_added', snap => {
-        var i = snap.key.split('meme');
-        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
-        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
-        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].style.color = 'white';
-        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].style.backgroundColor = 'black';
-    })
-}
-
-function disableDisLikedPostsBtn() {
-    var numOfMemes;
-    databaseRef.child('memes/').once('value', snap => {
-        numOfMemes = snap.numChildren();
-    })
-    databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts').on('child_added', snap => {
-        var i = snap.key.split('meme');
-        document.getElementsByClassName('likeBtn')[numOfMemes - i[1]].disabled = 'true';
-        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
-        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].style.color = 'white';
-        document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].style.backgroundColor = 'black';
-    })
-}
-
-function displayMemes() {
-    var i = 0;
-    databaseRef.child('memes').on('child_added', snap => {
-        var uploadedBy = snap.val().uploadingUsername;
-        var date = snap.val().date;
-        var numOfMemes;
-        databaseRef.child('memes/').once('value', snap => {
-            numOfMemes = snap.numChildren();
-        })
-        //get Elements
-        var url = snap.val().url;
-        var likes = snap.val().likes;
-        var dislikes = snap.val().dislikes;
-    
-        //creation of box starts
-        var div1 = document.createElement('div');
-        div1.className = 'box';
-        var img = document.createElement('img');
-
-        var div2 = document.createElement('div');
-        div2.className = 'memeDetails';
-        var t = document.createTextNode('uploaded by ' + uploadedBy + ' on ' + date);
-        div2.appendChild(t);
-
-        var div3 = document.createElement('button');
-        div3.className = 'likeBtn';
-        var span1 = document.createElement('span');
-        span1.className = 'likeTxt';
-        t = document.createTextNode(likes);
-        span1.appendChild(t);
-        var icon1 = document.createElement('i');
-        icon1.className = 'material-icons like-icon';
-        t = document.createTextNode('thumb_up');
-        icon1.appendChild(t);
-
-        var div4 = document.createElement('button');
-        div4.className = 'dislikeBtn';
-        var span2 = document.createElement('span');
-        span2.className = 'dislikeTxt';
-        t = document.createTextNode(dislikes);
-        span2.appendChild(t);
-        var icon2 = document.createElement('i');
-        icon2.className = 'material-icons dislike-icon';
-        t = document.createTextNode('thumb_down');
-        icon2.appendChild(t);
-
-        div1.appendChild(img);
-        div1.appendChild(div2);
-        div1.appendChild(div3);
-        div1.appendChild(div4);
-        div3.appendChild(span1);
-        div3.appendChild(icon1);
-        div4.appendChild(span2);
-        div4.appendChild(icon2);
-        document.getElementById('container').appendChild(div1);
-        //creation of box ends
-
-        //download memes
-        storageRef.child('memes/' + url).getDownloadURL()
-            .then(function (url) {
-                img.src = url;
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        if(auth.currentUser == null){
-            document.getElementsByClassName('likeBtn')[i].disabled = 'true';
-            document.getElementsByClassName('dislikeBtn')[i].disabled = 'true';
-        }
-        //like and dislike events
-        likeEvent(snap.val().likes, i, numOfMemes);
-        dislikeEvent(snap.val().dislikes, i, numOfMemes);
-        i++;
-    })
-}
-
-function likeEvent(likes, i, numOfMemes) {
-    var likeBtn = $('.likeBtn')[i];
-    var dislikeBtn = $('.dislikeBtn')[i];
-    var initialLikes = likes;
-    var finalLikes = initialLikes + 1;
-    likeBtn.addEventListener('click', () => {
-        databaseRef.child('memes/meme' + (numOfMemes - i)).update({
-            likes: finalLikes, 
-        });
-        likeBtn.innerHTML = "";
-        var span = document.createElement('span');
-        span.className = 'likeTxt';
-        var t = document.createTextNode(finalLikes);
-        span.appendChild(t);
-        var icon1 = document.createElement('i');
-        icon1.className = 'material-icons';
-        t = document.createTextNode('thumb_up');
-        icon1.appendChild(t);
-        likeBtn.appendChild(span);
-        likeBtn.appendChild(icon1);
-        //Disable like and dislike button for that post
-        likeBtn.disabled = 'true';
-        dislikeBtn.disabled = 'true';
-        //change color on liking
-        likeBtn.style.color = 'white';
-        //upload name of the post and time of liking
-        var d = new Date();
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        var day = days[d.getDay()];
-        var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
-        databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts/meme' + (numOfMemes - i)).update({
-            date: date,
-            time: time,
-            day: day
-        })
-    });
-}
-
-function dislikeEvent(dislikes, i, numOfMemes) {
-    var dislikeBtn = $('.dislikeBtn')[i];
-    var likeBtn = $('.likeBtn')[i];
-    var initialDislikes = dislikes;
-    var finalDislikes = initialDislikes + 1;
-    dislikeBtn.addEventListener('click', () => {
-        databaseRef.child('memes/meme' + (numOfMemes - i)).update({
-            dislikes: finalDislikes
-        });
-        dislikeBtn.innerHTML = "";
-        var span = document.createElement('span');
-        span.className = 'dislikeTxt';
-        var t = document.createTextNode(finalDislikes);
-        span.appendChild(t);
-        var icon1 = document.createElement('i');
-        icon1.className = 'material-icons';
-        t = document.createTextNode('thumb_down');
-        icon1.appendChild(t);
-        dislikeBtn.appendChild(span);
-        dislikeBtn.appendChild(icon1);
-        //disable like and dislike button for that post
-        dislikeBtn.disabled = 'true';
-        likeBtn.disabled = 'true';
-        //change color on disliking
-        dislikeBtn.style.color = 'white';
-        //upload name of the post and time of disliking
-        var d = new Date();
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        var day = days[d.getDay()];
-        var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
-        databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts/meme' + (numOfMemes - i)).update({
-            date: date,
-            time: time,
-            day: day
-        })
-    });
-}
-
-//Add login event
-const loginBtn = document.getElementById('loginBtn');
-loginBtn.addEventListener('click', () => {
-    var email = document.getElementById('email').value;
-    var psw = document.getElementById('password').value;
-    auth.signInWithEmailAndPassword(email, psw)
-    .then(res => {
-            window.location.href = 'index.html';
-        })
-    .catch(error => {
-        alert(error);
-    })
-})
-
-function updateTotalLikesGot() {
-    var sum = 0;
-    databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').on('child_added', snap => {
-        databaseRef.child('memes/' + snap.key).once('value', snap => {
-            sum += snap.val().likes;
-            var uploadingUserId = snap.val().uploadingUserId;
-            databaseRef.child('users/' + uploadingUserId).update({
-                totalLikesGot: -sum
-            })
-        })
-    })
-}
+</script>
+</body>
+</html>
