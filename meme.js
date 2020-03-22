@@ -47,6 +47,8 @@ auth.onAuthStateChanged(firebaseUser => {
         uploadBtn.addEventListener('click', () => {
           uploadMeme();
         });
+
+        updateTotalLikesGot();
     } else {
         console.log('logged out');
         displayMemes();
@@ -352,3 +354,16 @@ loginBtn.addEventListener('click', () => {
         alert(error);
     })
 })
+
+function updateTotalLikesGot() {
+    var sum = 0;
+    databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').on('child_added', snap => {
+        databaseRef.child('memes/' + snap.key).once('value', snap => {
+            sum += snap.val().likes;
+            var uploadingUserId = snap.val().uploadingUserId;
+            databaseRef.child('users/' + uploadingUserId).update({
+                totalLikesGot: -sum
+            })
+        })
+    })
+}
