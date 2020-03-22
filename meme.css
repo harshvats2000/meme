@@ -50,38 +50,29 @@ img {
 	top: 0;
 	width: 100%;
 	box-shadow: 0 2px 7px lightgrey;
+	display: flex;
+	justify-content: space-around;
+}
+
+#upload{
+	order: 1;
+	line-height: 1.5;
+	font-size: 28px;
+	cursor: pointer;
+}
+
+#logoutBtn{
+	order: 2;
+	line-height: 1.5;
+	font-size: 28px;
+	cursor: pointer;
 }
 
 #profileBtn {
-	float: left;
-	margin-left: 2px;
-	color: black;
-	background-color: #00fbbb;
-}
-
-#profileBtn:hover {
-	background-color: #00bfff;
-}
-
-#logoutBtn {
-	float: right;
-	margin-left: 8px;
-	color: black;
-	background-color: #00fbbb;
-}
-
-#logoutBtn:hover {
-	background-color: #00bfff;
-}
-
-#upload {
-	float: right;
-	background-color: #00fbbb;
-	color: black;
-}
-
-#upload:hover {
-	background-color: #00bfff;
+	order: 0;
+	line-height: 1.5;
+	font-size: 28px;
+	cursor: pointer;
 }
 
 #login {
