@@ -77,6 +77,9 @@
 		#heading2 {
 			text-align: center;
 		}
+		#heading3 {
+			text-align: center;
+		}
     </style>
 </head>
 <body>
@@ -84,6 +87,7 @@
 	<div id="container">
 		<h4 id="heading1">Uploaded Memes: <span id="numOfMemes"></span></h4>
 		<h4 id="heading2">Total Likes: <span id="totalLikes"></span></h4>
+		<h4 id="heading3">Rank: <span id="rank"></span></h4>
 		<div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
@@ -124,7 +128,7 @@ firebase.analytics();
 var storageRef = firebase.storage().ref();
 var databaseRef = firebase.database().ref();
 var auth = firebase.auth();
-
+var username;
 
 auth.onAuthStateChanged(firebaseUser =>  {
 	if(firebaseUser) {
@@ -135,11 +139,17 @@ auth.onAuthStateChanged(firebaseUser =>  {
 				document.getElementById('numOfMemes').innerHTML = snap.numChildren();
 		});
 		//get total number of likes
-		databaseRef.child('users/' + firebaseUser.uid + '/uploadedMemes').on('child_added', snap => {
-			databaseRef.child('memes/' + snap.key).once('value', snap => {
-				document.getElementById('totalLikes').innerHTML = snap.val().likes;
-			})
-		});
+		databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+			document.getElementById('totalLikes').innerHTML = -snap.val().totalLikesGot;
+		})
+		//getRank
+		var i =1;
+		databaseRef.child('users/').orderByChild('totalLikesGot').on('child_added', snap => {
+			if(username == snap.val().username){
+				document.getElementById('rank').innerHTML = i;
+			}
+			i++;
+		})
 		displayUploadedMemes();
 	} else {
 		console.log('user is logged out.');
@@ -148,7 +158,7 @@ auth.onAuthStateChanged(firebaseUser =>  {
 
 function displayUsername() {
 	databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
-		var username = snap.val().username;
+		username = snap.val().username;
 		var span = document.createElement('span');
 		span.id = 'username';
 		var t = document.createTextNode(username);
