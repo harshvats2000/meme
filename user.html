@@ -88,6 +88,78 @@
 		#editModal {
 			background-color: #00bfff;
 		}
+		/*loader*/
+		#loader {
+			display: none;
+			margin: auto;
+		}
+		.lds-grid {
+		  display: inline-block;
+		  position: relative;
+		  width: 80px;
+		  height: 80px;
+		}
+		.lds-grid div {
+		  position: absolute;
+		  width: 16px;
+		  height: 16px;
+		  border-radius: 50%;
+		  background: #fff;
+		  animation: lds-grid 1.2s linear infinite;
+		}
+		.lds-grid div:nth-child(1) {
+		  top: 8px;
+		  left: 8px;
+		  animation-delay: 0s;
+		}
+		.lds-grid div:nth-child(2) {
+		  top: 8px;
+		  left: 32px;
+		  animation-delay: -0.4s;
+		}
+		.lds-grid div:nth-child(3) {
+		  top: 8px;
+		  left: 56px;
+		  animation-delay: -0.8s;
+		}
+		.lds-grid div:nth-child(4) {
+		  top: 32px;
+		  left: 8px;
+		  animation-delay: -0.4s;
+		}
+		.lds-grid div:nth-child(5) {
+		  top: 32px;
+		  left: 32px;
+		  animation-delay: -0.8s;
+		}
+		.lds-grid div:nth-child(6) {
+		  top: 32px;
+		  left: 56px;
+		  animation-delay: -1.2s;
+		}
+		.lds-grid div:nth-child(7) {
+		  top: 56px;
+		  left: 8px;
+		  animation-delay: -0.8s;
+		}
+		.lds-grid div:nth-child(8) {
+		  top: 56px;
+		  left: 32px;
+		  animation-delay: -1.2s;
+		}
+		.lds-grid div:nth-child(9) {
+		  top: 56px;
+		  left: 56px;
+		  animation-delay: -1.6s;
+		}
+		@keyframes lds-grid {
+		  0%, 100% {
+		    opacity: 1;
+		  }
+		  50% {
+		    opacity: 0.5;
+		  }
+		}
     </style>
 </head>
 <body>
@@ -98,6 +170,7 @@
 		<h4 id="heading1">Uploaded Memes: <span id="numOfMemes"></span></h4>
 		<h4 id="heading2">Total Likes: <span id="totalLikes"></span></h4>
 		<h4 id="heading3">Rank: <span id="rank"></span></h4>
+		<div class="lds-grid" id="loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 		<div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
@@ -161,6 +234,7 @@ var storageRef = firebase.storage().ref();
 var databaseRef = firebase.database().ref();
 var auth = firebase.auth();
 var username;
+document.getElementById('loader').style.display = 'block';
 
 auth.onAuthStateChanged(firebaseUser =>  {
 	if(firebaseUser) {
@@ -222,6 +296,7 @@ function displayUploadedMemes() {
 		.then((url) => {
 			turl = url;
 			img.src = url;
+			document.getElementById('loader').style.display = 'none';
 		})
 		.catch(error => {
 			alert(error);
