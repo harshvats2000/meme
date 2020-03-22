@@ -65,21 +65,21 @@ auth.onAuthStateChanged(firebaseUser => {
 })
 
 function createProfileBtn() {
-    var btn = document.createElement('button');
-    btn.id = 'profileBtn';
-    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-    var t = document.createTextNode('Profile');
-    btn.appendChild(t);
-    document.getElementById('header').appendChild(btn);
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'profileBtn';
+    var t = document.createTextNode('account_circle');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
 }
 
 function createLogoutBtn() {
-    var btn = document.createElement('button');
-    btn.id = 'logoutBtn';
-    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-    var t = document.createTextNode('Logout');
-    btn.appendChild(t);
-    document.getElementById('header').appendChild(btn);
+    var span = document.createElement('span');
+    span.className = 'material-icons'
+    span.id = 'logoutBtn';
+    var t = document.createTextNode('power_settings_new');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
 }
 
 function createLoginBtn() {
@@ -93,12 +93,12 @@ function createLoginBtn() {
 }
 
 function createUploadBtn() {
-  var btn = document.createElement('button');
-  btn.id = 'upload';
-  btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-  var t = document.createTextNode('Upload');
-  btn.appendChild(t);
-  document.getElementById('header').appendChild(btn);
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'upload';
+    var t = document.createTextNode('backup');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
 }
 
 function logout() {
