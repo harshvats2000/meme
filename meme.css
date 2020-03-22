@@ -4,7 +4,7 @@ html body {
 }
 
 body {
-	background-color: #414142;
+	background-color: #00fbbb;
 }
 
 img {
@@ -32,19 +32,17 @@ img {
 	width: 50%;
 	height: 40px;
 	border: none;
-	background-image: linear-gradient(to right,#047023,#13cf49);
 }
 
 .dislikeBtn {
 	width: 50%;
 	height: 40px;
 	border: none;
-	background-image: linear-gradient(to right, #eb0505, #850303);
 }
 
 #header {
 	height: 40px;
-	background-color: #414142;
+	background-color: #00bfff;
 	color: white;
 	position: fixed;
 	top: 0;
@@ -55,43 +53,43 @@ img {
 #profileBtn {
 	float: left;
 	margin-left: 8px;
-	color: white;
-	background-color: #414142;
+	color: black;
+	background-color: #00fbbb;
 }
 
 #profileBtn:hover {
-	background-color: crimson;
+	background-color: #00bfff;
 }
 
 #logoutBtn {
 	float: right;
 	margin-left: 8px;
-	color: white;
-	background-color: #414142;
+	color: black;
+	background-color: #00fbbb;
 }
 
 #logoutBtn:hover {
-	background-color: crimson;
+	background-color: #00bfff;
 }
 
 #upload {
 	float: right;
-	background-color: #414142;
-	color: white;
+	background-color: #00fbbb;
+	color: black;
 }
 
 #upload:hover {
-	background-color: crimson;
+	background-color: #00bfff;
 }
 
 #login {
 	float: right;
-	background-color: #414142;
-	color: white;
+	background-color: #00fbbb;
+	color: black;
 }
 
 #login:hover {
-	background-color: crimson;
+	background-color: #00bfff;
 }
 
 .likeTxt {
@@ -107,4 +105,14 @@ img {
 	background-color: #414142;
 	color: white;
 	font-size: 12px;
+	height: 23px;
+	line-height: 24px
+}
+
+#myModal {
+	background-color: #00bfff;
+}
+
+#uploadModal {
+	background-color: #00bfff;
 }
