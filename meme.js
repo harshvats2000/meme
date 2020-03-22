@@ -17,6 +17,8 @@ var storageRef = firebase.storage().ref();
 var databaseRef = firebase.database().ref();
 var auth = firebase.auth();
 
+document.getElementById('loader').style.display = 'block';
+
 auth.onAuthStateChanged(firebaseUser => {
     if (firebaseUser) {
         console.log('logged in.');
@@ -246,6 +248,7 @@ function displayMemes() {
         storageRef.child('memes/' + url).getDownloadURL()
             .then(function (url) {
                 img.src = url;
+                document.getElementById('loader').style.display = 'none';
             })
             .catch(error => {
                 console.log(error);
