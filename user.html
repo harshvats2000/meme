@@ -49,7 +49,7 @@
 				width: 60%;
 			}
 		}
-		#username {
+		#displayUsername {
 			font-size: 20px;
 			margin-left: 7px;
 			text-transform: capitalize;
@@ -63,9 +63,8 @@
 			float: left;
 			width: 33.33%;
 			border: 2px solid white;
-		}
-		.box {
 			transition: 1s;
+			cursor: pointer;
 		}
 		#modalImg {
 			max-width: 100%;
@@ -80,10 +79,21 @@
 		#heading3 {
 			text-align: center;
 		}
+		#editIcon {
+			float: right;
+			margin: 6px;
+			font-size: 26px;
+			cursor: pointer;
+		}
+		#editModal {
+			background-color: #00bfff;
+		}
     </style>
 </head>
 <body>
-	<div id="header"></div>
+	<div id="header">
+		<i class="material-icons" id="editIcon">create</i>
+	</div>
 	<div id="container">
 		<h4 id="heading1">Uploaded Memes: <span id="numOfMemes"></span></h4>
 		<h4 id="heading2">Total Likes: <span id="totalLikes"></span></h4>
@@ -108,6 +118,28 @@
         </div>
     </div>
 	</div>
+	<!-- edit Modal starts -->
+	<div id="editModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 style="text-align: center;">Profile</h2>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                	<input type="username" name="username" id="username" class="mdl-textfield__input"><br>
+                	<input type="email" name="email" id="email" class="mdl-textfield__input">
+                </div>
+                <div class="modal-footer" style="text-align: center;">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="saveBtn">Save</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+	<!-- edit modal ends -->
 
 <script type="text/javascript">
 // Your web app's Firebase configuration
@@ -151,6 +183,12 @@ auth.onAuthStateChanged(firebaseUser =>  {
 			i++;
 		})
 		displayUploadedMemes();
+		document.getElementById('editIcon').addEventListener('click', () => {
+			editProfile();
+		});
+		document.getElementById('saveBtn').addEventListener('click', () => {
+			saveProfile();
+		})
 	} else {
 		console.log('user is logged out.');
 	}
@@ -160,7 +198,7 @@ function displayUsername() {
 	databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
 		username = snap.val().username;
 		var span = document.createElement('span');
-		span.id = 'username';
+		span.id = 'displayUsername';
 		var t = document.createTextNode(username);
 		span.appendChild(t);
 		document.getElementById('header').appendChild(span);
@@ -205,6 +243,25 @@ function displayUploadedMemes() {
 	})
 }
 
+function editProfile() {
+	$("#editModal").modal('toggle');
+	databaseRef.child('users/' + auth.currentUser.uid).on('value', snap => {
+		document.getElementById('username').value = snap.val().username;
+		document.getElementById('email').value = snap.val().email;
+	})
+}
+
+function saveProfile() {
+	var a = document.getElementById('username').value;
+	var b = document.getElementById('email').value;
+	databaseRef.child('users/' + auth.currentUser.uid).update({
+		username: a,
+		email: b
+	})
+	.then(() => {
+		window.location.href = 'user.html';
+	});
+}
 </script>
 </body>
 </html>
