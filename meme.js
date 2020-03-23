@@ -50,6 +50,10 @@ auth.onAuthStateChanged(firebaseUser => {
           uploadMeme();
         });
 
+        document.getElementById('postComment').addEventListener('click', () => {
+            postComment();
+        })
+
         updateTotalLikesGot();
     } else {
         console.log('logged out');
@@ -191,6 +195,7 @@ function displayMemes() {
     var i = 0;
     databaseRef.child('memes').on('child_added', snap => {
         var uploadedBy = snap.val().uploadingUsername;
+        var uploadingUserId = snap.val().uploadingUserId;
         var date = snap.val().date;
         var numOfMemes;
         databaseRef.child('memes/').once('value', snap => {
@@ -205,6 +210,7 @@ function displayMemes() {
         var div1 = document.createElement('div');
         div1.className = 'box';
         var img = document.createElement('img');
+        img.className = 'img'
 
         var div2 = document.createElement('div');
         div2.className = 'memeDetails';
@@ -260,6 +266,8 @@ function displayMemes() {
         //like and dislike events
         likeEvent(snap.val().likes, i, numOfMemes);
         dislikeEvent(snap.val().dislikes, i, numOfMemes);
+        stalkEvent(i, uploadedBy, uploadingUserId);
+        showComments(i, numOfMemes);
         i++;
     })
 }
@@ -342,6 +350,63 @@ function dislikeEvent(dislikes, i, numOfMemes) {
             day: day
         })
     });
+}
+
+function stalkEvent(i, uploadedBy, uploadingUserId) {
+    $('.memeDetails')[i].addEventListener('click', () => {
+        databaseRef.child('users/' + auth.currentUser.uid + '/stalking').update({
+            username: uploadedBy,
+            userId: uploadingUserId
+        });
+        window.location.href = 'stalk.html';
+    })
+}
+
+function showComments(i, numOfMemes) {
+    $('.img')[i].addEventListener('click', () => {
+        $('#memeModal').modal('toggle');
+        document.getElementById('comments').innerHTML = '';//make meme modal body emptpy first
+        databaseRef.child('memes/meme' + (numOfMemes - i) + '/comments').on('child_added', snap => {
+            var div = document.createElement('div');
+            div.className = 'commentBox';
+            var li = document.createElement('li');
+            li.className = 'commentList';
+            var span = document.createElement('span');
+            t = document.createTextNode(snap.val().commentBy);
+            span.appendChild(t);
+            t = document.createTextNode(snap.val().comment);
+            li.appendChild(t);
+            div.appendChild(li);
+            div.appendChild(span);
+            br = document.createElement('div');
+            br.className = 'breaker';
+            document.getElementById('comments').appendChild(br);
+            document.getElementById('comments').appendChild(div);
+        })
+        databaseRef.child('users/' + auth.currentUser.uid).update({
+            seeingCommentsOfMeme: 'meme'+(numOfMemes-i)
+        })
+    })
+}
+
+function postComment() {
+    var username;
+    databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+        username = snap.val().username;
+        var comment = document.getElementById('commentMssg').value;
+        databaseRef.child('users/' + auth.currentUser.uid + '/seeingCommentsOfMeme').once('value', snap => {
+            var meme = snap.val();
+            var d = new Date();
+            var timestamp = -d.getTime();
+            if(comment !== ''){
+                databaseRef.child('memes/' + meme + '/comments/' + timestamp).update({
+                    comment: comment,
+                    commentBy: username
+                })
+                document.getElementById('commentMssg').value = '';
+            }
+        })
+    })
 }
 
 //Add login event
