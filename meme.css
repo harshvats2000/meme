@@ -99,7 +99,8 @@ img {
 	color: white;
 	font-size: 12px;
 	height: 23px;
-	line-height: 24px
+	line-height: 24px;
+	cursor: pointer;
 }
 
 #myModal {
@@ -107,6 +108,35 @@ img {
 }
 
 #uploadModal {
+	background-color: #00bfff;
+}
+
+.commentBox {
+	display: flex;
+}
+
+.commentList {
+	flex-grow: 1;
+}
+
+.breaker {
+	border: 1.2px solid black;
+}
+
+#memeModalHeader {
+	position: sticky;
+	top: 0;
+	background-color: #00bfff;
+	color: white;
+}
+
+#closeMemeModal {
+	font-size: 30px;
+}
+
+#memeModalFooter {
+	position: sticky;
+	bottom: 0;
 	background-color: #00bfff;
 }
 
