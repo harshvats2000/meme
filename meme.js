@@ -228,25 +228,34 @@ function displayMemes() {
         t = document.createTextNode('thumb_up');
         icon1.appendChild(t);
 
-        var div4 = document.createElement('button');
-        div4.className = 'dislikeBtn';
+        var commentBtn = document.createElement('button');
+        commentBtn.className = 'commentBtn';
+        var icon2 = document.createElement('i');
+        icon2.className = 'material-icons';
+        t = document.createTextNode('comment');
+        icon2.appendChild(t);
+
+        var div5 = document.createElement('button');
+        div5.className = 'dislikeBtn';
         var span2 = document.createElement('span');
         span2.className = 'dislikeTxt';
         t = document.createTextNode(dislikes);
         span2.appendChild(t);
-        var icon2 = document.createElement('i');
-        icon2.className = 'material-icons dislike-icon';
+        var icon3 = document.createElement('i');
+        icon3.className = 'material-icons dislike-icon';
         t = document.createTextNode('thumb_down');
-        icon2.appendChild(t);
+        icon3.appendChild(t);
 
         div1.appendChild(img);
         div1.appendChild(div2);
         div1.appendChild(div3);
-        div1.appendChild(div4);
+        div1.appendChild(commentBtn);
+        div1.appendChild(div5);
         div3.appendChild(span1);
         div3.appendChild(icon1);
-        div4.appendChild(span2);
-        div4.appendChild(icon2);
+        commentBtn.appendChild(icon2);
+        div5.appendChild(span2);
+        div5.appendChild(icon3);
         document.getElementById('container').appendChild(div1);
         //creation of box ends
 
@@ -363,7 +372,7 @@ function stalkEvent(i, uploadedBy, uploadingUserId) {
 }
 
 function showComments(i, numOfMemes) {
-    $('.img')[i].addEventListener('click', () => {
+    $('.commentBtn')[i].addEventListener('click', () => {
         $('#memeModal').modal('toggle');
         document.getElementById('comments').innerHTML = '';//make meme modal body emptpy first
         databaseRef.child('memes/meme' + (numOfMemes - i) + '/comments').on('child_added', snap => {
