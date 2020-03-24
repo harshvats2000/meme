@@ -31,13 +31,19 @@ img {
 }
 
 .likeBtn {
-	width: 50%;
+	width: 33.33%;
+	height: 40px;
+	border: none;
+}
+
+.commentBtn {
+	width: 33.33%;
 	height: 40px;
 	border: none;
 }
 
 .dislikeBtn {
-	width: 50%;
+	width: 33.33%;
 	height: 40px;
 	border: none;
 }
@@ -120,12 +126,14 @@ img {
 }
 
 .breaker {
-	border: 1.2px solid black;
+	border: 1.2px solid #00bfff;
+}
+
+#memeModal {
+	background-color: #00bfff;
 }
 
 #memeModalHeader {
-	position: sticky;
-	top: 0;
 	background-color: #00bfff;
 	color: white;
 }
@@ -138,6 +146,8 @@ img {
 	position: sticky;
 	bottom: 0;
 	background-color: #00bfff;
+	display: flex;
+	justify-content: end;
 }
 
 /*loader*/
