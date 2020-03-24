@@ -64,7 +64,11 @@ auth.onAuthStateChanged(firebaseUser => {
         login.addEventListener('click', () => {
             $("#myModal").modal('toggle');
         })
-        
+
+        document.getElementById('postComment').addEventListener('click', () => {
+          $("#myModal").modal('toggle');
+          $('#memeModal').modal('hide');  
+        })
     }
 })
 
