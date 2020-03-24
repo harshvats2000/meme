@@ -69,6 +69,27 @@ auth.onAuthStateChanged(firebaseUser => {
           $("#myModal").modal('toggle');
           $('#memeModal').modal('hide');  
         })
+
+        document.getElementById('forgotPswLink').addEventListener('click', () => {
+            console.log('hi')
+            $('#forgotPswModal').modal('toggle');
+            $('#myModal').modal('hide');
+            document.getElementById('sendResetEmailBtn').addEventListener('click', () => {
+                console.log('clicked');
+                sendVerificationEmail();
+            })
+        })
+
+        document.getElementById('googleSignInBtn').addEventListener('click', () => {
+            var base_provider = new firebase.auth.GoogleAuthProvider()
+            auth.signInWithPopup(base_provider)
+            .then((result) => {
+                console.log(result)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        })
     }
 })
 
@@ -385,6 +406,7 @@ function showComments(i, numOfMemes) {
             var li = document.createElement('li');
             li.className = 'commentList';
             var span = document.createElement('span');
+            span.style.fontWeight = '800';
             t = document.createTextNode(snap.val().commentBy);
             span.appendChild(t);
             t = document.createTextNode(snap.val().comment);
@@ -393,8 +415,8 @@ function showComments(i, numOfMemes) {
             div.appendChild(span);
             br = document.createElement('div');
             br.className = 'breaker';
-            document.getElementById('comments').appendChild(br);
             document.getElementById('comments').appendChild(div);
+            document.getElementById('comments').appendChild(br);
         })
         databaseRef.child('users/' + auth.currentUser.uid).update({
             seeingCommentsOfMeme: 'meme'+(numOfMemes-i)
@@ -447,4 +469,20 @@ function updateTotalLikesGot() {
             })
         })
     })
+}
+
+function sendVerificationEmail() {
+    var email = document.getElementById('resetPswEmail').value;
+    if(email !== '') {
+        auth.sendPasswordResetEmail(email)
+        .then(() => {
+            document.getElementById('resetPswEmail').value = '';
+            alert('verification email is sent.Please check and verify.');
+        })
+        .catch(error => {
+            alert(error.message);
+        })
+    } else {
+        alert('enter email');
+    }
 }
