@@ -237,9 +237,14 @@ function displayMemes() {
         var img = document.createElement('img');
         img.className = 'img'
 
+        var div0 = document.createElement('div');
+        div0.className = 'memeAuthor';
+        var t = document.createTextNode(uploadedBy);
+        div0.appendChild(t);
+
         var div2 = document.createElement('div');
         div2.className = 'memeDetails';
-        var t = document.createTextNode('uploaded by ' + uploadedBy + ' on ' + date);
+        t = document.createTextNode(date);
         div2.appendChild(t);
 
         var div3 = document.createElement('button');
@@ -271,6 +276,7 @@ function displayMemes() {
         t = document.createTextNode('thumb_down');
         icon3.appendChild(t);
 
+        div1.appendChild(div0);
         div1.appendChild(img);
         div1.appendChild(div2);
         div1.appendChild(div3);
