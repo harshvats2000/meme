@@ -78,6 +78,8 @@ img {
 	line-height: 1.5;
 	font-size: 28px;
 	cursor: pointer;
+	background-color: black;
+	color: white;
 }
 
 #login {
