@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>meme</title>
+    <title>memeVats</title>
     <meta charset="utf-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -58,13 +58,41 @@
                 </div>
                 <div class="modal-footer" style="text-align: center;">
                     <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="loginBtn">Login</button>
+                    <a id="forgotPswLink">Forgot password?</a>
+                    <br>
                     <a href="signUp.html">Dont have an accout?</a>
+                    <br>
+                    <button id="googleSignInBtn">Sign in with google</button>
                 </div>
             </div>
 
         </div>
     </div>
     <!-- login modal ends -->
+    <!-- forgot psw modal starts -->
+    <div id="forgotPswModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="email" id="resetPswEmail">
+                        <label class="mdl-textfield__label" for="resetPswEmail">Email...</label>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style="text-align: center;">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="sendResetEmailBtn">Send Email</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- forgot psw modal ends -->
 
     <!-- upload modal starts -->
     <div id="uploadModal" class="modal fade" role="dialog">
@@ -112,13 +140,6 @@
         </div>
     </div>
     <!-- meme modal ends -->
-
-    <!-- snackbar starts -->
-    <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
-  		<div class="mdl-snackbar__text"></div>
-  		<button class="mdl-snackbar__action" type="button"></button>
-	</div>
-    <!-- snackbar ends -->
 
     <!-- <div class="box">
 		<img src="">
