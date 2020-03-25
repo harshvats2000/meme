@@ -109,27 +109,24 @@ body {
 	color: black;
 }
 
-
-.likeTxt {
-	vertical-align: text-bottom;
-}
-
-.dislikeTxt {
-	vertical-align: super;
-}
-
 .memeAuthor {
 	height: 35px;
     padding: 10px;
     font-size: 20px;
-    line-height: 0.5;
-    font-weight: 700;
+    line-height: 0;
     background-color: black;
     color: white;
     cursor: pointer;
 }
 
+.authorName {
+	vertical-align: super;
+	font-weight: 700;
+	margin-left: 7px;
+}
+
 .memeDetails {
+	border: 1px solid white;
 	font-family: sans-serif;
 	background-color: black;
 	color: white;
@@ -138,6 +135,18 @@ body {
 	line-height: 24px;
 	text-align: right;
     padding-right: 5px;
+}
+
+.likeTxt {
+	vertical-align: text-bottom;
+}
+
+.commentTxt {
+	vertical-align: super;
+}
+
+.dislikeTxt {
+	vertical-align: super;
 }
 
 #myModal {
