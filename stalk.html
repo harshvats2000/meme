@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>meme</title>
+	<title>memeVats</title>
 	<meta charset="utf-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,11 +28,11 @@
 			height: 100%;
 		}
 		body {
-			background-color: #00fbbb;
+			background-color: black;
 		}
 		#header {
 			height: 40px;
-			background-color: #00bfff;
+			background-color: black;
 			color: white;
 			position: fixed;
 			top: 0;
@@ -65,24 +65,60 @@
 			transition: 1s;
 			cursor: pointer;
 		}
+		.modal-header {
+			background-color: black;
+			text-align: center;
+		}
+		.modal-footer {
+			background-color: black;
+		}
+		.modal-body{
+			background-color: whitesmoke;
+		}
+		#closeModalIcon {
+			color: white;
+    		opacity: 1;
+    		font-size: 27px
+		}
 		#modalImg {
-			max-width: 100%;
+			width: 100%;
 		}
 		#heading1 {
 			text-align: center;
+			color: white;
 			margin-top: 50px;
 		}
 		#heading2 {
 			text-align: center;
+			color: white;
 		}
 		#heading3 {
 			text-align: center;
+			color: white;
 		}
 		#headerUsername {
 			font-size: 20px;
 			margin-left: 7px;
 			text-transform: capitalize;
 			line-height: 37px;
+		}
+		#likeBtn {
+			width: 33.33%;
+			height: 40px;
+			border: none;
+			float: left;
+		}
+		#dislikeBtn {
+			width: 33.33%;
+			height: 40px;
+			border: none;
+			float: left;
+		}
+		#commentBtn {
+			width: 33.33%;
+			height: 40px;
+			border: none;
+			float: left;
 		}
 		/*loader*/
 		#loader {
@@ -165,46 +201,32 @@
 		<h4 id="heading2">Total Likes: <span id="totalLikes"></span></h4>
 		<h4 id="heading3">Rank: <span id="rank"></span></h4>
 		<div class="lds-grid" id="loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
 		<div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" id="closeModalIcon">&times;</button>
                 </div>
-                <div class="modal-body" style="text-align: center;">
-                	<img src="" id="modalImg">
+                <div class="modal-body">
+                	<div>
+                		<img src="" id="modalImg">
+                		<br>
+                		<button id="likeBtn">Likes</button>
+                		<button id="commentBtn">comment</button>
+                		<button id="dislikeBtn">dislike</button>
+                	</div>
                 </div>
                 <div class="modal-footer" style="text-align: center;">
-                    <div id="likes"></div>
-                    <div id="dislikes"></div>
+
                 </div>
             </div>
 
         </div>
     	</div>
 	</div>
-	<!-- meme modal starts -->
-	<div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                	<img src="" id="modalImg">
-                </div>
-                <div class="modal-footer" style="text-align: center;">
-                    <div id="likes"></div>
-                    <div id="dislikes"></div>
-                </div>
-            </div>
-
-        </div>
-    </div>
 
 <script type="text/javascript">
 // Your web app's Firebase configuration
@@ -230,7 +252,11 @@ document.getElementById('loader').style.display = 'block';
 auth.onAuthStateChanged(firebaseUser => {
 	if(firebaseUser) {
 		console.log('logged in');
+		updateTotalLikesGot();
 		displayMemes();
+		document.getElementById('likeBtn').addEventListener('click', () => {
+			console.log('clicked')
+		})
 	} else {
 		console.log('logged out');
 	}
@@ -247,7 +273,6 @@ function displayMemes() {
 		//getRank
 		var i =1;
 		databaseRef.child('users/').orderByChild('totalLikesGot').on('child_added', snap => {
-			console.log(snap.val().username)
 			if(username == snap.val().username){
 				document.getElementById('rank').innerHTML = i;
 			}
@@ -294,11 +319,27 @@ function displayMemes() {
 			div1.addEventListener('click', () => {
 				$("#myModal").modal('toggle');
 				document.getElementById('modalImg').src = turl;
-				document.getElementById('likes').innerHTML = 'Likes: ' + likes;
-				document.getElementById('dislikes').innerHTML = 'Dislikes ' + dislikes;
+				document.getElementById('likes').innerHTML = likes;
+				document.getElementById('dislikes').innerHTML = dislikes;
 			})
 		})
 	});
+}
+
+function updateTotalLikesGot() {
+	databaseRef.child('users/' + auth.currentUser.uid + '/stalking').once('value', snap => {
+		var userId = snap.val().userId
+    	var sum = 0;
+    	databaseRef.child('users/' + userId + '/uploadedMemes').on('child_added', snap => {
+    	    databaseRef.child('memes/' + snap.key).once('value', snap => {
+    	        sum += snap.val().likes;
+    	        var uploadingUserId = snap.val().uploadingUserId;
+    	        databaseRef.child('users/' + uploadingUserId).update({
+    	            totalLikesGot: -sum
+    	        })
+    	    })
+    	})
+	})
 }
 </script>
 </body>
