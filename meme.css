@@ -7,7 +7,28 @@ body {
 	background-color: black;
 }
 
-img {
+#googleSignInBtn {
+	border: none;
+	padding: 10px;
+    background-color: white;
+    border-radius: 2%;
+    box-shadow: 2px 3px 7px gainsboro;
+    margin-top: 5px;
+}
+
+#loginBtn {
+	margin-bottom: 12px;
+	margin-right: 10px;
+	background-color: white;
+	color: black;
+	box-shadow: 2px 3px 5px gainsboro;
+}
+#login:hover {
+	background-color: black;
+	color: white;
+}
+
+.img {
 	width: 100%;
 }
 
@@ -84,17 +105,10 @@ img {
 
 #login {
 	float: right;
-	background-color: #00fbbb;
+	background-color: white;
 	color: black;
 }
 
-#loginBtn {
-	margin-bottom: 12px;
-	margin-right: 10px;
-}
-#login:hover {
-	background-color: #00bfff;
-}
 
 .likeTxt {
 	vertical-align: text-bottom;
@@ -112,6 +126,7 @@ img {
     font-weight: 700;
     background-color: black;
     color: white;
+    cursor: pointer;
 }
 
 .memeDetails {
@@ -121,7 +136,8 @@ img {
 	font-size: 12px;
 	height: 23px;
 	line-height: 24px;
-	cursor: pointer;
+	text-align: right;
+    padding-right: 5px;
 }
 
 #myModal {
@@ -141,7 +157,9 @@ img {
 }
 
 .breaker {
-	border: 1.2px solid black;
+	/*border: 1.2px solid black;*/
+	height: 2px;/*
+	background-color: black;*/
 }
 
 #memeModal {
