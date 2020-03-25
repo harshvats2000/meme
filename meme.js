@@ -81,14 +81,7 @@ auth.onAuthStateChanged(firebaseUser => {
         })
 
         document.getElementById('googleSignInBtn').addEventListener('click', () => {
-            var base_provider = new firebase.auth.GoogleAuthProvider()
-            auth.signInWithPopup(base_provider)
-            .then((result) => {
-                console.log(result)
-            })
-            .catch(error => {
-                console.log(error)
-            })
+            signInWithGoogle();
         })
     }
 })
@@ -393,7 +386,7 @@ function dislikeEvent(dislikes, i, numOfMemes) {
 }
 
 function stalkEvent(i, uploadedBy, uploadingUserId) {
-    $('.memeDetails')[i].addEventListener('click', () => {
+    $('.memeAuthor')[i].addEventListener('click', () => {
         databaseRef.child('users/' + auth.currentUser.uid + '/stalking').update({
             username: uploadedBy,
             userId: uploadingUserId
@@ -419,7 +412,7 @@ function showComments(i, numOfMemes) {
             li.appendChild(t);
             div.appendChild(li);
             div.appendChild(span);
-            br = document.createElement('div');
+            br = document.createElement('hr');
             br.className = 'breaker';
             document.getElementById('comments').appendChild(div);
             document.getElementById('comments').appendChild(br);
@@ -474,6 +467,30 @@ function updateTotalLikesGot() {
                 totalLikesGot: -sum
             })
         })
+    })
+}
+
+function signInWithGoogle() {
+    var base_provider = new firebase.auth.GoogleAuthProvider()
+    auth.signInWithPopup(base_provider)
+    .then((result) => {
+        var name = auth.currentUser.displayName;
+        var email = auth.currentUser.email;
+        databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+            if(snap.val().username == undefined) {
+                databaseRef.child('users/' + auth.currentUser.uid).update({
+                    username: name,
+                    email: email,
+                    totalLikesGot: 0
+                })
+                window.location.href = 'index.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        })
+    })
+    .catch(error => {
+        alert(error.message);
     })
 }
 
