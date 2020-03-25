@@ -53,8 +53,6 @@ auth.onAuthStateChanged(firebaseUser => {
         document.getElementById('postComment').addEventListener('click', () => {
             postComment();
         })
-
-        updateTotalLikesGot();
     } else {
         console.log('logged out');
         displayMemes();
@@ -223,75 +221,95 @@ function displayMemes() {
         var url = snap.val().url;
         var likes = snap.val().likes;
         var dislikes = snap.val().dislikes;
+        //get number of comments
+        var comments;
+        databaseRef.child('memes/' + snap.key + '/comments').on('value', snap => {
+            comments = snap.numChildren();
+        })
     
         //creation of box starts
-        var div1 = document.createElement('div');
-        div1.className = 'box';
+        var boxDiv = document.createElement('div');
+        boxDiv.className = 'box';
+
+        var authorDiv = document.createElement('div');
+        authorDiv.className = 'memeAuthor';
+        var authorIcon = document.createElement('i');
+        authorIcon.className = 'material-icons';
+        var t = document.createTextNode('face');
+        authorIcon.appendChild(t);
+        var authorName = document.createElement('span');
+        authorName.className = 'authorName';
+        t = document.createTextNode(uploadedBy);
+        authorName.appendChild(t);
+
         var img = document.createElement('img');
-        img.className = 'img'
+        img.className = 'img';
 
-        var div0 = document.createElement('div');
-        div0.className = 'memeAuthor';
-        var t = document.createTextNode(uploadedBy);
-        div0.appendChild(t);
-
-        var div2 = document.createElement('div');
-        div2.className = 'memeDetails';
+        var memeDetailsDiv = document.createElement('div');
+        memeDetailsDiv.className = 'memeDetails';
         t = document.createTextNode(date);
-        div2.appendChild(t);
+        memeDetailsDiv.appendChild(t);
 
-        var div3 = document.createElement('button');
-        div3.className = 'likeBtn';
-        var span1 = document.createElement('span');
-        span1.className = 'likeTxt';
+        var likeBtn = document.createElement('button');
+        likeBtn.className = 'likeBtn';
+        var likeTxt = document.createElement('span');
+        likeTxt.className = 'likeTxt';
         t = document.createTextNode(likes);
-        span1.appendChild(t);
-        var icon1 = document.createElement('i');
-        icon1.className = 'material-icons like-icon';
+        likeTxt.appendChild(t);
+        var likeIcon = document.createElement('i');
+        likeIcon.className = 'material-icons like-icon';
         t = document.createTextNode('thumb_up');
-        icon1.appendChild(t);
+        likeIcon.appendChild(t);
 
         var commentBtn = document.createElement('button');
         commentBtn.className = 'commentBtn';
-        var icon2 = document.createElement('i');
-        icon2.className = 'material-icons';
+        var commentTxt = document.createElement('span');
+        commentTxt.className  = 'commentTxt';
+        t = document.createTextNode(comments);
+        commentTxt.appendChild(t);
+        var commentIcon = document.createElement('i');
+        commentIcon.className = 'material-icons';
         t = document.createTextNode('comment');
-        icon2.appendChild(t);
+        commentIcon.appendChild(t);
 
-        var div5 = document.createElement('button');
-        div5.className = 'dislikeBtn';
-        var span2 = document.createElement('span');
-        span2.className = 'dislikeTxt';
+        var dislikeBtn = document.createElement('button');
+        dislikeBtn.className = 'dislikeBtn';
+        var dislikeTxt = document.createElement('span');
+        dislikeTxt.className = 'dislikeTxt';
         t = document.createTextNode(dislikes);
-        span2.appendChild(t);
-        var icon3 = document.createElement('i');
-        icon3.className = 'material-icons dislike-icon';
+        dislikeTxt.appendChild(t);
+        var dislikeIcon = document.createElement('i');
+        dislikeIcon.className = 'material-icons dislike-icon';
         t = document.createTextNode('thumb_down');
-        icon3.appendChild(t);
+        dislikeIcon.appendChild(t);
 
-        div1.appendChild(div0);
-        div1.appendChild(img);
-        div1.appendChild(div2);
-        div1.appendChild(div3);
-        div1.appendChild(commentBtn);
-        div1.appendChild(div5);
-        div3.appendChild(span1);
-        div3.appendChild(icon1);
-        commentBtn.appendChild(icon2);
-        div5.appendChild(span2);
-        div5.appendChild(icon3);
-        document.getElementById('container').appendChild(div1);
+        boxDiv.appendChild(authorDiv);
+        boxDiv.appendChild(img);
+        boxDiv.appendChild(memeDetailsDiv);
+        boxDiv.appendChild(likeBtn);
+        boxDiv.appendChild(commentBtn);
+        boxDiv.appendChild(dislikeBtn);
+        authorDiv.appendChild(authorIcon);
+        authorDiv.appendChild(authorName);
+        likeBtn.appendChild(likeTxt);
+        likeBtn.appendChild(likeIcon);
+        commentBtn.appendChild(commentTxt);
+        commentBtn.appendChild(commentIcon);
+        dislikeBtn.appendChild(dislikeTxt);
+        dislikeBtn.appendChild(dislikeIcon);
+        document.getElementById('container').appendChild(boxDiv);
         //creation of box ends
 
         //download memes
         storageRef.child('memes/' + url).getDownloadURL()
-            .then(function (url) {
-                img.src = url;
-                document.getElementById('loader').style.display = 'none';
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        .then(function (url) {
+            img.src = url;
+            document.getElementById('loader').style.display = 'none';
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
         if(auth.currentUser == null){
             document.getElementsByClassName('likeBtn')[i].disabled = 'true';
             document.getElementsByClassName('dislikeBtn')[i].disabled = 'true';
@@ -319,12 +337,12 @@ function likeEvent(likes, i, numOfMemes) {
         span.className = 'likeTxt';
         var t = document.createTextNode(finalLikes);
         span.appendChild(t);
-        var icon1 = document.createElement('i');
-        icon1.className = 'material-icons';
+        var likeIcon = document.createElement('i');
+        likeIcon.className = 'material-icons';
         t = document.createTextNode('thumb_up');
-        icon1.appendChild(t);
+        likeIcon.appendChild(t);
         likeBtn.appendChild(span);
-        likeBtn.appendChild(icon1);
+        likeBtn.appendChild(likeIcon);
         //Disable like and dislike button for that post
         likeBtn.disabled = 'true';
         dislikeBtn.disabled = 'true';
@@ -359,12 +377,12 @@ function dislikeEvent(dislikes, i, numOfMemes) {
         span.className = 'dislikeTxt';
         var t = document.createTextNode(finalDislikes);
         span.appendChild(t);
-        var icon1 = document.createElement('i');
-        icon1.className = 'material-icons';
+        var likeIcon = document.createElement('i');
+        likeIcon.className = 'material-icons';
         t = document.createTextNode('thumb_down');
-        icon1.appendChild(t);
+        likeIcon.appendChild(t);
         dislikeBtn.appendChild(span);
-        dislikeBtn.appendChild(icon1);
+        dislikeBtn.appendChild(likeIcon);
         //disable like and dislike button for that post
         dislikeBtn.disabled = 'true';
         likeBtn.disabled = 'true';
@@ -456,19 +474,6 @@ loginBtn.addEventListener('click', () => {
         alert(error);
     })
 })
-
-function updateTotalLikesGot() {
-    var sum = 0;
-    databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes').on('child_added', snap => {
-        databaseRef.child('memes/' + snap.key).once('value', snap => {
-            sum += snap.val().likes;
-            var uploadingUserId = snap.val().uploadingUserId;
-            databaseRef.child('users/' + uploadingUserId).update({
-                totalLikesGot: -sum
-            })
-        })
-    })
-}
 
 function signInWithGoogle() {
     var base_provider = new firebase.auth.GoogleAuthProvider()
