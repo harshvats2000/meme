@@ -1,6 +1,5 @@
 html body {
 	margin: 0;
-	height: 100%;
 }
 
 body {
@@ -139,14 +138,17 @@ body {
 
 .likeTxt {
 	vertical-align: text-bottom;
+	margin-right: 4px;
 }
 
 .commentTxt {
 	vertical-align: super;
+	margin-right: 4px;
 }
 
 .dislikeTxt {
 	vertical-align: super;
+	margin-right: 4px;
 }
 
 #myModal {
@@ -166,9 +168,7 @@ body {
 }
 
 .breaker {
-	/*border: 1.2px solid black;*/
-	height: 2px;/*
-	background-color: black;*/
+	height: 2px;
 }
 
 #memeModal {
