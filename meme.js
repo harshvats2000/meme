@@ -77,10 +77,6 @@ auth.onAuthStateChanged(firebaseUser => {
                 sendVerificationEmail();
             })
         })
-
-        document.getElementById('googleSignInBtn').addEventListener('click', () => {
-            signInWithGoogle();
-        })
     }
 })
 
@@ -462,8 +458,7 @@ function postComment() {
 }
 
 //Add login event
-const loginBtn = document.getElementById('loginBtn');
-loginBtn.addEventListener('click', () => {
+document.getElementById('loginBtn').addEventListener('click', () => {
     var email = document.getElementById('email').value;
     var psw = document.getElementById('password').value;
     auth.signInWithEmailAndPassword(email, psw)
@@ -475,29 +470,26 @@ loginBtn.addEventListener('click', () => {
     })
 })
 
-function signInWithGoogle() {
+document.getElementById('googleSignInBtn').addEventListener('click', () => {
     var base_provider = new firebase.auth.GoogleAuthProvider()
     auth.signInWithPopup(base_provider)
     .then((result) => {
+        window.location.href = 'index.html';
         var name = auth.currentUser.displayName;
         var email = auth.currentUser.email;
-        databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
-            if(snap.val().username == undefined) {
-                databaseRef.child('users/' + auth.currentUser.uid).update({
-                    username: name,
-                    email: email,
-                    totalLikesGot: 0
-                })
-                window.location.href = 'index.html';
-            } else {
-                window.location.href = 'index.html';
-            }
-        })
+        var condition = auth.currentUser.metadata.creationTime === auth.currentUser.metadata.lastSignInTime;//first time user
+        if(condition) {
+            databaseRef.child('users/' + auth.currentUser.uid).update({
+                username: name,
+                email: email,
+                totalLikesGot: 0
+            });
+        }
     })
     .catch(error => {
         alert(error.message);
     })
-}
+})
 
 function sendVerificationEmail() {
     var email = document.getElementById('resetPswEmail').value;
