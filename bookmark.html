@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>memeVats</title>
+	<meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-storage.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+        html body {
+            margin: 0;
+        }
+        
+        body {
+            background-color: black;
+        }
+        #container {
+            margin: auto;
+            margin-top: 50px;
+        }
+        
+        @media only screen and (min-width: 700px){
+            #container {
+                width: 40%;
+            }
+        }
+        #header {
+            height: 40px;
+            background-color: black;
+            color: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: 0 2px 7px lightgrey;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        #homeBtn {
+            order: 0;
+            line-height: 1.5;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        
+        #profileBtn {
+            order: 1;
+            line-height: 1.5;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        
+        #upload{
+            order: 2;
+            line-height: 1.5;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        
+        #bookmarkBtn {
+            order: 3;
+            line-height: 1.5;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        
+        #logoutBtn{
+            order: 4;
+            line-height: 1.5;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        .img {
+            width: 100%;
+            height: 150px;
+        }
+        .box {
+            float: left;
+            width: 33.33%;
+            border: 2px solid white;
+            transition: 1s;
+            cursor: pointer;
+        }
+        #memeModalHeader {
+            background-color: black;
+            text-align: center;
+            color: white;
+            opacity: 1;
+        }
+        .closeModalIcon {
+            color: white;
+            opacity: 1;
+            font-size: 27px
+            opacity: 1;
+        }
+        #memeModalBody{
+            background-color: whitesmoke;
+        }
+        #memeModalFooter {
+            background-color: black;
+        }
+        #modalImg {
+            width: 100%;
+            max-height: 500px;
+        }
+        #likeBtn {
+            width: 33.33%;
+            height: 40px;
+            border: none;
+            float: left;
+        }
+        #commentBtn {
+            width: 33.33%;
+            height: 40px;
+            border: none;
+            float: left;
+        }
+        #dislikeBtn {
+            width: 33.33%;
+            height: 40px;
+            border: none;
+            float: left;
+        }
+        #likeTxt {
+            vertical-align: text-bottom;
+            margin-right: 4px;
+        }
+        
+        #commentTxt {
+            vertical-align: super;
+            margin-right: 4px;
+        }
+        
+        #dislikeTxt {
+            vertical-align: super;
+            margin-right: 4px;
+        }
+        #commentModal {
+            overflow-y: scroll;
+            background-color: black;
+        }
+        .commentBox {
+            display: flex;
+        }
+        
+        .commentList {
+            flex-grow: 1;
+        }
+        
+        .breaker {
+            height: 2px;
+        }
+        #commentModalBody{
+            padding: 10px;
+        }
+        #commentModalFooter {
+            position: sticky;
+            bottom: 0;
+            background-color: black;
+            display: flex;
+            justify-content: end;
+        }
+        /*loader*/
+        #loader {
+            display: none;
+            margin: auto;
+        }
+        .lds-grid {
+          display: inline-block;
+          position: relative;
+          width: 80px;
+          height: 80px;
+        }
+        .lds-grid div {
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #fff;
+          animation: lds-grid 1.2s linear infinite;
+        }
+        .lds-grid div:nth-child(1) {
+          top: 8px;
+          left: 8px;
+          animation-delay: 0s;
+        }
+        .lds-grid div:nth-child(2) {
+          top: 8px;
+          left: 32px;
+          animation-delay: -0.4s;
+        }
+        .lds-grid div:nth-child(3) {
+          top: 8px;
+          left: 56px;
+          animation-delay: -0.8s;
+        }
+        .lds-grid div:nth-child(4) {
+          top: 32px;
+          left: 8px;
+          animation-delay: -0.4s;
+        }
+        .lds-grid div:nth-child(5) {
+          top: 32px;
+          left: 32px;
+          animation-delay: -0.8s;
+        }
+        .lds-grid div:nth-child(6) {
+          top: 32px;
+          left: 56px;
+          animation-delay: -1.2s;
+        }
+        .lds-grid div:nth-child(7) {
+          top: 56px;
+          left: 8px;
+          animation-delay: -0.8s;
+        }
+        .lds-grid div:nth-child(8) {
+          top: 56px;
+          left: 32px;
+          animation-delay: -1.2s;
+        }
+        .lds-grid div:nth-child(9) {
+          top: 56px;
+          left: 56px;
+          animation-delay: -1.6s;
+        }
+        @keyframes lds-grid {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div id="container">
+        <div class="lds-grid" id="loader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+    <!-- upload modal starts -->
+    <div id="uploadModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Upload</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="file" accept="image/x-png" id="memeFile">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="uploadBtn" class="mdl-button mdl-js-button mdl-button--raised">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- upload modal ends -->
+
+    <!-- meme modal starts -->
+    <div id="memeModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id="memeModalHeader">
+                    <button type="button" class="close closeModalIcon" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="memeModalBody">
+                    <div>
+                        <img src="" id="modalImg">
+                        <br>
+                        <button id="likeBtn"><span id="likeTxt"></span><i class="material-icons">thumb_up</i></button>
+                        <button id="commentBtn"><span id="commentTxt"></span><i class="material-icons">comment</i></button>
+                        <button id="dislikeBtn"><span id="dislikeTxt"></span><i class="material-icons">thumb_down</i></button>
+                    </div>
+                </div>
+                <div class="modal-footer" id="memeModalFooter" style="text-align: center;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- meme modal ends -->
+
+    <!-- comment modal starts -->
+    <div id="commentModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id="memeModalHeader">
+                    <h4>Comments <button type="button" class="close closeModalIcon" data-dismiss="modal" class="closeModalIcon">&times;</button></h4>
+                </div>
+                <div class="modal-body" id="commentModalBody">
+                    <div>
+                        <ol id="comments"></ol>
+                    </div>
+                </div>
+                <div class="modal-footer" id="commentModalFooter" style="text-align: center;">
+                    <i class="material-icons" data-dismiss='modal' style="cursor: pointer; margin-right: 12px; color: white;">reply</i>
+                    <input type="comment" name="comment" id="commentMssg">
+                    <button id="postComment">Comment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- comment modal ends -->
+
+<script type="text/javascript">
+var firebaseConfig = {
+    apiKey: "AIzaSyCMECXTcIB89Jz4OPJyT8pWHbaHwgezHUQ",
+    authDomain: "meme-a8183.firebaseapp.com",
+    databaseURL: "https://meme-a8183.firebaseio.com",
+    projectId: "meme-a8183",
+    storageBucket: "meme-a8183.appspot.com",
+    messagingSenderId: "505723637281",
+    appId: "1:505723637281:web:dca3babc6b8a80485d1d60",
+    measurementId: "G-EHK7BB5H50"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
+var storageRef = firebase.storage().ref();
+var databaseRef = firebase.database().ref();
+var auth = firebase.auth();
+document.getElementById('loader').style.display = 'block';
+
+auth.onAuthStateChanged(firebaseUser => {
+    if(firebaseUser) {
+        console.log('logged in');
+        createHomeBtn();
+        createProfileBtn();
+        createUploadBtn();
+        createBookmarkBtn();
+        createLogoutBtn();
+        displayMemes();
+
+        //get the total number of uploaded memes
+        databaseRef.child('users/' +auth.currentUser.uid + '/uploadedMemes').once('value', snap => {
+            var numOfMemes = document.getElementById('numOfMemes');
+            if(numOfMemes == 0) {
+                document.getElementById('loader').style.display = 'none';
+            }
+        });
+
+        //home page
+        var homeBtn = document.getElementById('homeBtn');
+        homeBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        })
+
+        //user profile
+        var profileBtn = document.getElementById('profileBtn');
+        profileBtn.addEventListener('click', () => {
+            window.location.href = 'user.html';
+        })
+
+        //rise upload Modal
+        var upload = document.getElementById('upload');
+        upload.addEventListener('click', () => {
+          $('#uploadModal').modal('toggle');
+        })
+    } else {
+        console.log('logged out')
+    }
+})
+
+function createHomeBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'homeBtn';
+    var t = document.createTextNode('home');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
+
+function createProfileBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'profileBtn';
+    var t = document.createTextNode('account_circle');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
+
+function createUploadBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'upload';
+    var t = document.createTextNode('backup');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
+
+function createBookmarkBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'bookmarkBtn';
+    var t = document.createTextNode('bookmark');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
+
+function createLogoutBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons'
+    span.id = 'logoutBtn';
+    var t = document.createTextNode('power_settings_new');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
+
+function logout() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  logoutBtn.addEventListener('click', () => {
+      auth.signOut();
+      logoutBtn.parentNode.removeChild(logoutBtn);
+      var upload = document.getElementById('upload');
+      upload.parentNode.removeChild(upload);
+      var profileBtn = document.getElementById('profileBtn');
+      profileBtn.parentNode.removeChild(profileBtn);
+      var bookmarkBtn = document.getElementById('bookmarkBtn');
+      bookmarkBtn.parentNode.removeChild(bookmarkBtn);
+      window.location.href = 'index.html';
+  });
+}
+
+function uploadMeme() {
+  databaseRef.child('memes').once('value', snap => {
+    var numOfMemes = snap.numChildren();
+    var meme = document.getElementById('memeFile').files[0];
+    var url = 'meme' + (numOfMemes+1);
+    var userId = auth.currentUser.uid;
+    var username = '';
+    var d = new Date();
+    var timestamp = -d.getTime();
+    databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+        username = snap.val().username;
+    })
+
+    storageRef.child('memes/' + url + '.png').put(meme)
+    .then(() => {
+        var d = new Date();
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var day = days[d.getDay()];
+        var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
+      databaseRef.child('memes/' + url).update({
+        url: url + '.png',
+        likes: 0,
+        dislikes: 0,
+        uploadingUserId: userId,
+        uploadingUsername: username,
+        timestamp: timestamp,
+        date: date,
+        day: day,
+        time: time,
+      });
+      
+      databaseRef.child('users/' + auth.currentUser.uid + '/uploadedMemes' + '/' + url).update({
+        url : url,
+        timestamp: timestamp
+      })
+      window.location.href = 'index.html';
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  })
+}
+
+function displayMemes() {
+    databaseRef.child('users/' + auth.currentUser.uid + '/bookmarkedMemes').orderByChild('timestamp').on('child_added', snap => {
+        var name = snap.key;
+        var turl;
+
+        var box = document.createElement('div');
+        box.className = 'box';
+        var img = document.createElement('img');
+        img.className = 'img';
+        box.appendChild(img);
+        document.getElementById('container').appendChild(box);
+
+        storageRef.child('memes/' + name + '.png').getDownloadURL()
+        .then((url) => {
+            turl = url;
+            img.src = url;
+            document.getElementById('loader').style.display = 'none';
+        })
+        .catch(error => {
+            alert(error);
+        })
+
+        var likes;
+        var dislikes;
+        //get number of likes and dislikes
+        databaseRef.child('memes/' + name).once('value', snap => {
+            likes = snap.val().likes;
+            dislikes = snap.val().dislikes;
+        })
+
+        box.addEventListener('click', () => {
+            $("#memeModal").modal('show');
+            showMemeModal(name, turl, likes, dislikes);
+        })
+    })
+}
+
+function showMemeModal(name, url, likes, dislikes) {
+    $("#memeModal").modal('show');
+    document.getElementById('modalImg').src = url;
+    document.getElementById('likeTxt').innerHTML = likes;
+    document.getElementById('dislikeTxt').innerHTML = dislikes;
+    disableLikedPostsBtn(name);
+    disableDislikedPostsBtn(name);
+    likeEvent(name);
+    dislikeEvent(name);
+    showComments(name);
+}
+
+
+function disableLikedPostsBtn(name) {
+    databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts').on('child_added', snap => {
+        if(name == snap.key) {
+            document.getElementById('likeBtn').disabled = 'true';
+            document.getElementById('likeBtn').style.backgroundColor = 'black';
+            document.getElementById('likeBtn').style.color = 'white';
+        }
+    })
+}
+
+function disableDislikedPostsBtn(name) {
+    databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts').on('child_added', snap => {
+        if(name == snap.key) {
+            document.getElementById('dislikeBtn').disabled = 'true';
+            document.getElementById('dislikeBtn').style.backgroundColor = 'black';
+            document.getElementById('dislikeBtn').style.color = 'white';
+        }
+    })
+}
+
+function likeEvent(name) {
+    document.getElementById('likeBtn').addEventListener('click', () => {
+        databaseRef.child('memes/' + name).once('value', snap => {
+            document.getElementById('likeBtn').disabled = 'true';
+            document.getElementById('likeBtn').style.backgroundColor = 'black';
+            document.getElementById('likeBtn').style.color = 'white';
+            var initialLikes = snap.val().likes;
+            var finalLikes = initialLikes + 1;
+            //update likes of the meme
+            databaseRef.child('memes/' + name).update({
+                likes: finalLikes
+            });
+            likeBtn.innerHTML = "";
+            var span = document.createElement('span');
+            span.id = 'likeTxt';
+            var t = document.createTextNode(finalLikes);
+            span.appendChild(t);
+            var likeIcon = document.createElement('i');
+            likeIcon.className = 'material-icons';
+            t = document.createTextNode('thumb_up');
+            likeIcon.appendChild(t);
+            likeBtn.appendChild(span);
+            likeBtn.appendChild(likeIcon);
+            //update liked posts of the current user
+            var d = new Date();
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+            var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var day = days[d.getDay()];
+            var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
+            databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts/' + name).update({
+                date: date,
+                time: time,
+                day: day
+            })
+        })
+    })
+}
+
+function dislikeEvent(name) {
+    document.getElementById('dislikeBtn').addEventListener('click', () => {
+        databaseRef.child('memes/' + name).once('value', snap => {
+            document.getElementById('dislikeBtn').disabled = 'true';
+            document.getElementById('dislikeBtn').style.backgroundColor = 'black';
+            document.getElementById('dislikeBtn').style.color = 'white';
+            var initialDislikes = snap.val().dislikes;
+            var finalDislikes = initialDislikes + 1;
+            databaseRef.child('memes/' + name).update({
+                dislikes: finalDislikes
+            });
+            dislikeBtn.innerHTML = "";
+            var span = document.createElement('span');
+            span.id = 'dislikeTxt';
+            var t = document.createTextNode(finalDislikes);
+            span.appendChild(t);
+            var dislikeIcon = document.createElement('i');
+            dislikeIcon.className = 'material-icons';
+            t = document.createTextNode('thumb_down');
+            dislikeIcon.appendChild(t);
+            dislikeBtn.appendChild(span);
+            dislikeBtn.appendChild(dislikeIcon);
+            //update disliked posts of the current user
+            var d = new Date();
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var date = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+            var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var day = days[d.getDay()];
+            var time = d.getHours() + 'hrs ' + d.getMinutes() + 'mins ' + d.getSeconds() + 'secs';
+            databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts/' + name).update({
+                date: date,
+                time: time,
+                day: day
+            })
+        })
+    })
+}
+
+function showComments(name) {
+    document.getElementById('commentBtn').addEventListener('click', () => {
+        $('#memeModal').modal('hide');
+        $('#commentModal').modal('show');
+        document.getElementById('comments').innerHTML = '';//make meme modal body emptpy first
+        databaseRef.child('memes/' + name + '/comments').on('child_added', snap => {    
+            var div = document.createElement('div');
+            div.className = 'commentBox';
+            var li = document.createElement('li');
+            li.className = 'commentList';
+            var span = document.createElement('span');
+            span.style.fontWeight = '800';
+            t = document.createTextNode(snap.val().commentBy);
+            span.appendChild(t);
+            t = document.createTextNode(snap.val().comment);
+            li.appendChild(t);
+            div.appendChild(li);
+            div.appendChild(span);
+            br = document.createElement('hr');
+            br.className = 'breaker';
+            document.getElementById('comments').appendChild(div);
+            document.getElementById('comments').appendChild(br);
+        })
+        databaseRef.child('users/' + auth.currentUser.uid).update({
+            seeingCommentsOfMeme: name
+        })
+    })
+}
+
+document.getElementById('postComment').addEventListener('click', () => {
+    postComment();
+})
+
+function postComment() {
+    var username;
+    databaseRef.child('users/' + auth.currentUser.uid).once('value', snap => {
+        username = snap.val().username;
+        var comment = document.getElementById('commentMssg').value;
+        databaseRef.child('users/' + auth.currentUser.uid + '/seeingCommentsOfMeme').once('value', snap => {
+            var meme = snap.val();
+            var d = new Date();
+            var timestamp = -d.getTime();
+            if(comment !== ''){
+                databaseRef.child('memes/' + meme + '/comments/' + timestamp).update({
+                    comment: comment,
+                    commentBy: username
+                })
+                document.getElementById('commentMssg').value = '';
+            }
+        })
+    })
+}
+</script>
+</body>
+</html>
