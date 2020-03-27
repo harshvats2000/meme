@@ -38,6 +38,18 @@
 			width: 100%;
 			box-shadow: 0 2px 7px lightgrey;
 		}
+		#homeBtn {
+            line-height: 1.5;
+            font-size: 28px;
+            cursor: pointer;
+            margin-left: 13px;
+        }
+		#headerUsername {
+			font-size: 20px;
+			margin-left: 7px;
+			text-transform: capitalize;
+			vertical-align: text-bottom;
+		}
     	#container {
 			margin: auto;
 			margin-top: 40px;
@@ -46,12 +58,6 @@
 			#container {
 				width: 60%;
 			}
-		}
-		#headerUsername {
-			font-size: 20px;
-			margin-left: 7px;
-			text-transform: capitalize;
-			line-height: 37px;
 		}
 		.img {
 			width: 100%;
@@ -169,21 +175,28 @@
 		}
 		#modalImg {
 			width: 100%;
+			max-height: 500px;
 		}
 		#likeBtn {
-			width: 33.33%;
+			width: 25%;
 			height: 40px;
 			border: none;
 			float: left;
 		}
 		#commentBtn {
-			width: 33.33%;
+			width: 25%;
 			height: 40px;
 			border: none;
 			float: left;
 		}
 		#dislikeBtn {
-			width: 33.33%;
+			width: 25%;
+			height: 40px;
+			border: none;
+			float: left;
+		}
+		#bookmarkBtn {
+			width: 25%;
 			height: 40px;
 			border: none;
 			float: left;
@@ -203,7 +216,7 @@
 			margin-right: 4px;
 		}
 		#commentModal {
-			overflow: scroll;
+			overflow-y: scroll;
 			background-color: black;
 		}
 		.commentBox {
@@ -252,6 +265,7 @@
        	        		<button id="likeBtn"><span id="likeTxt"></span><i class="material-icons">thumb_up</i></button>
        	        		<button id="commentBtn"><span id="commentTxt"></span><i class="material-icons">comment</i></button>
        	        		<button id="dislikeBtn"><span id="dislikeTxt"></span><i class="material-icons">thumb_down</i></button>
+       	        		<button id="bookmarkBtn"><i class="material-icons">bookmark</i></button>
        	        	</div>
        	        </div>
        	        <div class="modal-footer" id="memeModalFooter" style="text-align: center;">
@@ -308,12 +322,29 @@ document.getElementById('loader').style.display = 'block';
 auth.onAuthStateChanged(firebaseUser => {
 	if(firebaseUser) {
 		console.log('logged in');
+		createHomeBtn();
 		updateTotalLikesGot();
+
+		//home page
+        var homeBtn = document.getElementById('homeBtn');
+        homeBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        })
+
 		displayMemes();
 	} else {
 		console.log('logged out');
 	}
 })
+
+function createHomeBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'homeBtn';
+    var t = document.createTextNode('home');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
 
 function displayMemes() {
 	databaseRef.child('users/' + auth.currentUser.uid + '/stalking').once('value', snap => {
@@ -383,43 +414,79 @@ function showMemeModal(name, url, likes, dislikes) {
 	document.getElementById('dislikeTxt').innerHTML = dislikes;
 	disableLikedPostsBtn(name);
 	disableDislikedPostsBtn(name);
+	colorBookmarkedMemesBtn(name);
 	likeEvent(name);
 	dislikeEvent(name);
 	showComments(name);
+	bookmarkEvent(name);
 }
 
-function disableLikedPostsBtn(name) {
+function disableLikedPostsBtn() {
+	var likeBtn = document.getElementById('likeBtn');
+	var dislikeBtn = document.getElementById('dislikeBtn');
 	databaseRef.child('users/' + auth.currentUser.uid + '/likedPosts').on('child_added', snap => {
 		if(name == snap.key) {
-			document.getElementById('likeBtn').disabled = 'true';
-			document.getElementById('likeBtn').style.backgroundColor = 'black';
-			document.getElementById('likeBtn').style.color = 'white';
+			likeBtn.disabled = 'true';
+			dislikeBtn.disabled = 'true';
+			likeBtn.style.backgroundColor = 'black';
+			likeBtn.style.color = 'white';
 		}
 	})
 }
 
 function disableDislikedPostsBtn(name) {
+	var dislikeBtn = document.getElementById('dislikeBtn');
+	var likeBtn = document.getElementById('likeBtn');
 	databaseRef.child('users/' + auth.currentUser.uid + '/dislikedPosts').on('child_added', snap => {
 		if(name == snap.key) {
-			document.getElementById('dislikeBtn').disabled = 'true';
-			document.getElementById('dislikeBtn').style.backgroundColor = 'black';
-			document.getElementById('dislikeBtn').style.color = 'white';
+			dislikeBtn.disabled = 'true';
+			likeBtn.disabled = 'true';
+			dislikeBtn.style.backgroundColor = 'black';
+			dislikeBtn.style.color = 'white';
 		}
 	})
 }
 
+function colorBookmarkedMemesBtn(name) {
+    var bookmarkBtn = document.getElementById('bookmarkBtn');
+    bookmarkBtn.style.backgroundColor = '#dddddd';
+    bookmarkBtn.style.color = 'black';
+    databaseRef.child('users/' + auth.currentUser.uid + '/bookmarkedMemes').on('child_added', snap => {
+    	if(name == snap.key) {
+        	bookmarkBtn.style.backgroundColor = 'black';
+        	bookmarkBtn.style.color = 'white';
+    	}
+    })
+}
+
 function likeEvent(name) {
-	document.getElementById('likeBtn').addEventListener('click', () => {
+	var likeBtn = document.getElementById('likeBtn');
+	var dislikeBtn = document.getElementById('dislikeBtn');
+	likeBtn.addEventListener('click', () => {
 		databaseRef.child('memes/' + name).once('value', snap => {
-			document.getElementById('likeBtn').disabled = 'true';
-			document.getElementById('likeBtn').style.backgroundColor = 'black';
-			document.getElementById('likeBtn').style.color = 'white';
+			likeBtn.disabled = 'true';
+			likeBtn.style.backgroundColor = 'black';
+			likeBtn.style.color = 'white';
 			var initialLikes = snap.val().likes;
 			var finalLikes = initialLikes + 1;
 			//update likes of the meme
 			databaseRef.child('memes/' + name).update({
 				likes: finalLikes
 			});
+			likeBtn.innerHTML = "";
+        	var span = document.createElement('span');
+        	span.id = 'likeTxt';
+        	var t = document.createTextNode(finalLikes);
+        	span.appendChild(t);
+        	var likeIcon = document.createElement('i');
+        	likeIcon.className = 'material-icons';
+        	t = document.createTextNode('thumb_up');
+        	likeIcon.appendChild(t);
+        	likeBtn.appendChild(span);
+        	likeBtn.appendChild(likeIcon);
+        	//Disable like and dislike button for that post
+        	likeBtn.disabled = 'true';
+        	dislikeBtn.disabled = 'true';
 			//update liked posts of the current user
 			var d = new Date();
         	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -437,16 +504,32 @@ function likeEvent(name) {
 }
 
 function dislikeEvent(name) {
-	document.getElementById('dislikeBtn').addEventListener('click', () => {
+	var likeBtn = document.getElementById('likeBtn');
+	var dislikeBtn = document.getElementById('dislikeBtn');
+	dislikeBtn.addEventListener('click', () => {
 		databaseRef.child('memes/' + name).once('value', snap => {
-			document.getElementById('dislikeBtn').disabled = 'true';
-			document.getElementById('dislikeBtn').style.backgroundColor = 'black';
-			document.getElementById('dislikeBtn').style.color = 'white';
+			dislikeBtn.disabled = 'true';
+			dislikeBtn.style.backgroundColor = 'black';
+			dislikeBtn.style.color = 'white';
 			var initialDislikes = snap.val().dislikes;
 			var finalDislikes = initialDislikes + 1;
 			databaseRef.child('memes/' + name).update({
 				dislikes: finalDislikes
 			});
+			dislikeBtn.innerHTML = "";
+        	var span = document.createElement('span');
+        	span.id = 'dislikeTxt';
+        	var t = document.createTextNode(finalDislikes);
+        	span.appendChild(t);
+        	var dislikeIcon = document.createElement('i');
+        	dislikeIcon.className = 'material-icons';
+        	t = document.createTextNode('thumb_down');
+        	dislikeIcon.appendChild(t);
+        	dislikeBtn.appendChild(span);
+        	dislikeBtn.appendChild(dislikeIcon);
+        	//Disable like and dislike button for that post
+        	likeBtn.disabled = 'true';
+        	dislikeBtn.disabled = 'true';
 			//update disliked posts of the current user
 			var d = new Date();
         	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -468,7 +551,7 @@ function showComments(name) {
 		$('#memeModal').modal('hide');
 		$('#commentModal').modal('show');
     	document.getElementById('comments').innerHTML = '';//make meme modal body emptpy first
-    	databaseRef.child('memes/' + name + '/comments').on('child_added', snap => {
+    	databaseRef.child('memes/' + name + '/comments').on('child_added', snap => {	
     	    var div = document.createElement('div');
     	    div.className = 'commentBox';
     	    var li = document.createElement('li');
@@ -491,6 +574,27 @@ function showComments(name) {
     	})
 	})
 }
+
+function bookmarkEvent(name) {
+    var bookmarkBtn = document.getElementById('bookmarkBtn');
+
+    bookmarkBtn.addEventListener('click', () => {
+        if(bookmarkBtn.style.backgroundColor == 'black'){
+            databaseRef.child('users/' + auth.currentUser.uid + '/bookmarkedMemes/' + name).remove();
+            bookmarkBtn.style.backgroundColor = '#dddddd';
+            bookmarkBtn.style.color = 'black';
+        } else {
+            var d = new Date();
+            var timestamp = d.getTime();
+            databaseRef.child('users/' + auth.currentUser.uid + '/bookmarkedMemes/' + name).update({
+                timestamp: timestamp
+            })
+            bookmarkBtn.style.backgroundColor = 'black';
+            bookmarkBtn.style.color = 'white';
+        }
+    })
+}
+
 
 document.getElementById('postComment').addEventListener('click', () => {
 	postComment();
