@@ -22,12 +22,20 @@ document.getElementById('loader').style.display = 'block';
 auth.onAuthStateChanged(firebaseUser => {
     if (firebaseUser) {
         console.log('logged in.');
-        createLogoutBtn();
         createProfileBtn();
         createUploadBtn();
+        createBookmarkBtn();
+        createLogoutBtn();
         displayMemes();
-        disableLikedPostsBtn();
-        disableDisLikedPostsBtn();
+        disableLikedMemesBtn();
+        disableDislikedMemesBtn();
+        colorBookmarkedMemesBtn();
+
+        //user profile
+        var profileBtn = document.getElementById('profileBtn');
+        profileBtn.addEventListener('click', () => {
+            window.location.href = 'user.html';
+        })
 
         //rise upload Modal
         var upload = document.getElementById('upload');
@@ -35,10 +43,10 @@ auth.onAuthStateChanged(firebaseUser => {
           $('#uploadModal').modal('toggle');
         })
 
-        //user profile
-        var profileBtn = document.getElementById('profileBtn');
-        profileBtn.addEventListener('click', () => {
-            window.location.href = 'user.html';
+        //bookmarked page
+        var bookmarkBtn = document.getElementById('bookmarkBtn');
+        bookmarkBtn.addEventListener('click', () => {
+            window.location.href = 'bookmark.html';
         })
 
         //Add logout event
@@ -80,11 +88,39 @@ auth.onAuthStateChanged(firebaseUser => {
     }
 })
 
+function createLoginBtn() {
+    var btn = document.createElement('button');
+    btn.id = 'login';
+    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
+    btn.modal = 'toggle';
+    var t = document.createTextNode('Login');
+    btn.appendChild(t);
+    document.getElementById('header').appendChild(btn);
+}
+
 function createProfileBtn() {
     var span = document.createElement('span');
     span.className = 'material-icons';
     span.id = 'profileBtn';
     var t = document.createTextNode('account_circle');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
+
+function createUploadBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'upload';
+    var t = document.createTextNode('backup');
+    span.appendChild(t);
+    document.getElementById('header').appendChild(span);
+}
+
+function createBookmarkBtn() {
+    var span = document.createElement('span');
+    span.className = 'material-icons';
+    span.id = 'bookmarkBtn';
+    var t = document.createTextNode('bookmark');
     span.appendChild(t);
     document.getElementById('header').appendChild(span);
 }
@@ -98,25 +134,6 @@ function createLogoutBtn() {
     document.getElementById('header').appendChild(span);
 }
 
-function createLoginBtn() {
-    var btn = document.createElement('button');
-    btn.id = 'login';
-    btn.className = 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect';
-    btn.modal = 'toggle';
-    var t = document.createTextNode('Login');
-    btn.appendChild(t);
-    document.getElementById('header').appendChild(btn);
-}
-
-function createUploadBtn() {
-    var span = document.createElement('span');
-    span.className = 'material-icons';
-    span.id = 'upload';
-    var t = document.createTextNode('backup');
-    span.appendChild(t);
-    document.getElementById('header').appendChild(span);
-}
-
 function logout() {
   const logoutBtn = document.getElementById('logoutBtn');
   logoutBtn.addEventListener('click', () => {
@@ -126,6 +143,8 @@ function logout() {
       upload.parentNode.removeChild(upload);
       var profileBtn = document.getElementById('profileBtn');
       profileBtn.parentNode.removeChild(profileBtn);
+      var bookmarkBtn = document.getElementById('bookmarkBtn');
+      bookmarkBtn.parentNode.removeChild(bookmarkBtn);
       window.location.href = 'index.html';
   });
 }
@@ -175,7 +194,7 @@ function uploadMeme() {
   })
 }
 
-function disableLikedPostsBtn() {
+function disableLikedMemesBtn() {
     var numOfMemes;
     databaseRef.child('memes/').once('value', snap => {
         numOfMemes = snap.numChildren();
@@ -189,7 +208,7 @@ function disableLikedPostsBtn() {
     })
 }
 
-function disableDisLikedPostsBtn() {
+function disableDislikedMemesBtn() {
     var numOfMemes;
     databaseRef.child('memes/').once('value', snap => {
         numOfMemes = snap.numChildren();
@@ -200,6 +219,19 @@ function disableDisLikedPostsBtn() {
         document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].disabled = 'true';
         document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].style.color = 'white';
         document.getElementsByClassName('dislikeBtn')[numOfMemes - i[1]].style.backgroundColor = 'black';
+    })
+}
+
+function colorBookmarkedMemesBtn() {
+    var numOfMemes;
+    databaseRef.child('memes/').once('value', snap => {
+        numOfMemes = snap.numChildren();
+    });
+    databaseRef.child('users/' + auth.currentUser.uid + '/bookmarkedMemes').on('child_added', snap => {
+        var i = snap.key.split('meme');
+        var bookmarkBtn = document.getElementsByClassName('bookmarkBtn')[numOfMemes - i[1]];
+        bookmarkBtn.style.backgroundColor = 'black';
+        bookmarkBtn.style.color = 'white';
     })
 }
 
@@ -279,12 +311,20 @@ function displayMemes() {
         t = document.createTextNode('thumb_down');
         dislikeIcon.appendChild(t);
 
+        var bookmarkBtn = document.createElement('button');
+        bookmarkBtn.className = 'bookmarkBtn';
+        var bookmarkIcon = document.createElement('i');
+        bookmarkIcon.className = 'material-icons bookmark-icon';
+        t = document.createTextNode('bookmark');
+        bookmarkIcon.appendChild(t);
+
         boxDiv.appendChild(authorDiv);
         boxDiv.appendChild(img);
         boxDiv.appendChild(memeDetailsDiv);
         boxDiv.appendChild(likeBtn);
         boxDiv.appendChild(commentBtn);
         boxDiv.appendChild(dislikeBtn);
+        boxDiv.appendChild(bookmarkBtn);
         authorDiv.appendChild(authorIcon);
         authorDiv.appendChild(authorName);
         likeBtn.appendChild(likeTxt);
@@ -293,6 +333,7 @@ function displayMemes() {
         commentBtn.appendChild(commentIcon);
         dislikeBtn.appendChild(dislikeTxt);
         dislikeBtn.appendChild(dislikeIcon);
+        bookmarkBtn.appendChild(bookmarkIcon);
         document.getElementById('container').appendChild(boxDiv);
         //creation of box ends
 
@@ -315,6 +356,7 @@ function displayMemes() {
         dislikeEvent(snap.val().dislikes, i, numOfMemes);
         stalkEvent(i, uploadedBy, uploadingUserId);
         showComments(i, numOfMemes);
+        bookmarkEvent(i, numOfMemes);
         i++;
     })
 }
@@ -373,12 +415,12 @@ function dislikeEvent(dislikes, i, numOfMemes) {
         span.className = 'dislikeTxt';
         var t = document.createTextNode(finalDislikes);
         span.appendChild(t);
-        var likeIcon = document.createElement('i');
-        likeIcon.className = 'material-icons';
+        var dislikeIcon = document.createElement('i');
+        dislikeIcon.className = 'material-icons';
         t = document.createTextNode('thumb_down');
-        likeIcon.appendChild(t);
+        dislikeIcon.appendChild(t);
         dislikeBtn.appendChild(span);
-        dislikeBtn.appendChild(likeIcon);
+        dislikeBtn.appendChild(dislikeIcon);
         //disable like and dislike button for that post
         dislikeBtn.disabled = 'true';
         likeBtn.disabled = 'true';
@@ -406,6 +448,27 @@ function stalkEvent(i, uploadedBy, uploadingUserId) {
             userId: uploadingUserId
         });
         window.location.href = 'stalk.html';
+    })
+}
+
+function bookmarkEvent(i, numOfMemes) {
+    var name = 'meme' + (numOfMemes-i);
+    var bookmarkBtn = document.getElementsByClassName('bookmarkBtn')[i];
+
+    bookmarkBtn.addEventListener('click', () => {
+        if(bookmarkBtn.style.backgroundColor == 'black'){
+            databaseRef.child('users/' + auth.currentUser.uid + '/bookmarkedMemes/' + name).remove();
+            bookmarkBtn.style.backgroundColor = '#dddddd';
+            bookmarkBtn.style.color = 'black';
+        } else {
+            var d = new Date();
+            var timestamp = d.getTime();
+            databaseRef.child('users/' + auth.currentUser.uid + '/bookmarkedMemes/' + name).update({
+                timestamp: timestamp
+            })
+            bookmarkBtn.style.backgroundColor = 'black';
+            bookmarkBtn.style.color = 'white';
+        }
     })
 }
 
@@ -456,6 +519,7 @@ function postComment() {
         })
     })
 }
+
 
 //Add login event
 document.getElementById('loginBtn').addEventListener('click', () => {
