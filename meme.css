@@ -29,6 +29,7 @@ body {
 
 .img {
 	width: 100%;
+	max-height: 500px;
 }
 
 #container {
@@ -50,19 +51,25 @@ body {
 }
 
 .likeBtn {
-	width: 33.33%;
+	width: 25%;
 	height: 40px;
 	border: none;
 }
 
 .commentBtn {
-	width: 33.33%;
+	width: 25%;
 	height: 40px;
 	border: none;
 }
 
 .dislikeBtn {
-	width: 33.33%;
+	width: 25%;
+	height: 40px;
+	border: none;
+}
+
+.bookmarkBtn {
+	width: 25%;
 	height: 40px;
 	border: none;
 }
@@ -79,20 +86,6 @@ body {
 	justify-content: space-around;
 }
 
-#upload{
-	order: 1;
-	line-height: 1.5;
-	font-size: 28px;
-	cursor: pointer;
-}
-
-#logoutBtn{
-	order: 2;
-	line-height: 1.5;
-	font-size: 28px;
-	cursor: pointer;
-}
-
 #profileBtn {
 	order: 0;
 	line-height: 1.5;
@@ -101,6 +94,28 @@ body {
 	background-color: black;
 	color: white;
 }
+
+#upload{
+	order: 1;
+	line-height: 1.5;
+	font-size: 28px;
+	cursor: pointer;
+}
+
+#bookmarkBtn {
+	order: 2;
+	line-height: 1.5;
+	font-size: 28px;
+	cursor: pointer;
+}
+
+#logoutBtn{
+	order: 3;
+	line-height: 1.5;
+	font-size: 28px;
+	cursor: pointer;
+}
+
 
 #login {
 	float: right;
